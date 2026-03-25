@@ -361,6 +361,257 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:48px 48px
   </div>
 </div>
 
+<!-- LIVE DEMO CALL SECTION -->
+<section style="padding:80px 48px;background:var(--bg)" id="demo">
+  <div style="max-width:780px;margin:0 auto;text-align:center">
+    <div class="sec-tag lime">Try it live</div>
+    <h2 class="sec-h">Talk to Poly — right now.</h2>
+    <p class="sec-p" style="margin:14px auto 40px">No sign-up. No sales call. Just pick up and hear exactly what your guests will hear.</p>
+
+    <div id="call-ui" style="background:var(--bg-2);border:1px solid var(--border);border-radius:24px;padding:48px 40px;position:relative;overflow:hidden">
+
+      <!-- ambient glow rings — animated via CSS -->
+      <div id="glow-rings" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .6s">
+        <div class="ring r1"></div>
+        <div class="ring r2"></div>
+        <div class="ring r3"></div>
+      </div>
+
+      <!-- idle state -->
+      <div id="state-idle">
+        <div style="width:88px;height:88px;background:var(--lime);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 28px;cursor:pointer;transition:transform .2s,box-shadow .2s" id="call-btn" onclick="startCall()">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <path d="M7 7.5C7 6.67 7.67 6 8.5 6h4.1a1.5 1.5 0 0 1 1.47 1.18l1.1 5.5a1.5 1.5 0 0 1-.41 1.41l-2.3 2.3a16.06 16.06 0 0 0 7.65 7.65l2.3-2.3a1.5 1.5 0 0 1 1.41-.41l5.5 1.1A1.5 1.5 0 0 1 30 23.4V27.5A1.5 1.5 0 0 1 28.5 29C16.07 29 6 18.93 6 6.5" stroke="#0e0f0c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div style="font-size:18px;font-weight:600;color:var(--text-primary);margin-bottom:8px">Call Poly</div>
+        <div style="font-size:14px;color:var(--text-secondary)">Tap to start a demo conversation</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;margin-top:28px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-muted)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M7 4v3.5l2 2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            ~90 second demo
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-muted)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z" stroke="currentColor" stroke-width="1.2"/><path d="M5 7l1.5 1.5L9.5 5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            No account needed
+          </div>
+          <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text-muted)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="2" y="4" width="10" height="7" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 4V3a2 2 0 0 1 4 0v1" stroke="currentColor" stroke-width="1.2"/></svg>
+            No data collected
+          </div>
+        </div>
+      </div>
+
+      <!-- calling state -->
+      <div id="state-calling" style="display:none">
+        <div style="position:relative;width:88px;height:88px;margin:0 auto 28px">
+          <div class="pulse-ring"></div>
+          <div style="width:88px;height:88px;background:var(--bg-4);border:2px solid var(--border-2);border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;z-index:1">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="10" r="5" stroke="var(--text-secondary)" stroke-width="1.8"/>
+              <path d="M6 26c0-5.52 4.48-10 10-10s10 4.48 10 10" stroke="var(--text-secondary)" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+        <div style="font-size:18px;font-weight:600;color:var(--text-primary);margin-bottom:6px">Connecting to Poly…</div>
+        <div style="font-size:13px;color:var(--text-muted)" id="calling-sub">Ringing</div>
+      </div>
+
+      <!-- active call state -->
+      <div id="state-active" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:24px">
+          <div style="width:8px;height:8px;background:#4ade80;border-radius:50%;animation:blink 1.5s infinite"></div>
+          <span style="font-size:13px;font-weight:600;color:#4ade80">Connected</span>
+          <span style="font-size:13px;color:var(--text-muted);margin-left:4px" id="timer">0:00</span>
+        </div>
+
+        <!-- avatar -->
+        <div style="width:72px;height:72px;background:var(--lime-soft);border:1px solid var(--lime-border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+          <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+            <circle cx="15" cy="9" r="5" stroke="#c8f04d" stroke-width="1.8"/>
+            <path d="M5 25c0-5.52 4.48-10 10-10s10 4.48 10 10" stroke="#c8f04d" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div style="font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:4px">Poly</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:28px" id="poly-status">Speaking…</div>
+
+        <!-- waveform visualiser -->
+        <div id="waveform" style="display:flex;align-items:center;justify-content:center;gap:3px;height:48px;margin-bottom:28px">
+          <div class="bar b1"></div><div class="bar b2"></div><div class="bar b3"></div>
+          <div class="bar b4"></div><div class="bar b5"></div><div class="bar b6"></div>
+          <div class="bar b7"></div><div class="bar b8"></div><div class="bar b9"></div>
+          <div class="bar b10"></div><div class="bar b11"></div><div class="bar b12"></div>
+          <div class="bar b13"></div><div class="bar b14"></div><div class="bar b15"></div>
+          <div class="bar b16"></div><div class="bar b17"></div><div class="bar b18"></div>
+          <div class="bar b19"></div><div class="bar b20"></div>
+        </div>
+
+        <!-- transcript bubble -->
+        <div id="transcript" style="background:var(--bg-3);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-bottom:24px;min-height:60px;text-align:left">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);margin-bottom:8px">Poly says</div>
+          <div id="transcript-text" style="font-size:14px;color:var(--text-primary);line-height:1.6"></div>
+        </div>
+
+        <!-- end call -->
+        <button onclick="endCall()" style="width:56px;height:56px;background:#ef4444;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto;transition:background .2s,transform .15s" onmouseover="this.style.background='#dc2626'" onmouseout="this.style.background='#ef4444'">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+            <path d="M18.5 14.5a1 1 0 0 1-.29.71l-2.5 2.5a1 1 0 0 1-.71.29 9.68 9.68 0 0 1-4.16-.93 23.87 23.87 0 0 1-3.86-2.7A23.87 23.87 0 0 1 4.28 10.5a9.68 9.68 0 0 1-.93-4.16 1 1 0 0 1 .29-.71l2.5-2.5a1 1 0 0 1 1.41 0L9.96 5.54a1 1 0 0 1 0 1.41L8.49 8.42a12.1 12.1 0 0 0 5.09 5.09l1.47-1.47a1 1 0 0 1 1.41 0l1.91 1.91a1 1 0 0 1 .13.55Z" fill="white"/>
+            <line x1="3" y1="3" x2="19" y2="19" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:12px">Tap to end call</div>
+      </div>
+
+      <!-- ended state -->
+      <div id="state-ended" style="display:none">
+        <div style="width:72px;height:72px;background:var(--lime-soft);border:1px solid var(--lime-border);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M5 14l6 6L23 8" stroke="#c8f04d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div style="font-size:18px;font-weight:600;color:var(--text-primary);margin-bottom:8px">That's what your guests experience.</div>
+        <div style="font-size:14px;color:var(--text-secondary);margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto">Natural, unhurried, indistinguishable from a trained human host — available 24/7 from day one.</div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button onclick="resetCall()" style="background:var(--bg-3);color:var(--text-secondary);border:1px solid var(--border);padding:10px 22px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='var(--border-2)'" onmouseout="this.style.borderColor='var(--border)'">Call again</button>
+          <a href="#pricing" class="btn-lime" style="font-size:14px;padding:10px 22px">Start free trial</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.ring{position:absolute;border-radius:50%;border:1px solid rgba(200,240,77,0.2);animation:expand 3s ease-out infinite}
+.r1{width:160px;height:160px;animation-delay:0s}
+.r2{width:240px;height:240px;animation-delay:.8s}
+.r3{width:320px;height:320px;animation-delay:1.6s}
+@keyframes expand{0%{transform:scale(.6);opacity:.6}100%{transform:scale(1);opacity:0}}
+.pulse-ring{position:absolute;inset:-12px;border-radius:50%;border:2px solid rgba(200,240,77,0.3);animation:pulse-out 1.4s ease-out infinite}
+@keyframes pulse-out{0%{transform:scale(1);opacity:.8}100%{transform:scale(1.5);opacity:0}}
+.bar{width:3px;background:var(--lime);border-radius:2px;transition:height .15s ease}
+.b1{height:8px;animation:barwave 1.1s ease-in-out infinite 0s}
+.b2{height:16px;animation:barwave 1.1s ease-in-out infinite .05s}
+.b3{height:28px;animation:barwave 1.1s ease-in-out infinite .1s}
+.b4{height:20px;animation:barwave 1.1s ease-in-out infinite .15s}
+.b5{height:36px;animation:barwave 1.1s ease-in-out infinite .2s}
+.b6{height:24px;animation:barwave 1.1s ease-in-out infinite .25s}
+.b7{height:40px;animation:barwave 1.1s ease-in-out infinite .3s}
+.b8{height:30px;animation:barwave 1.1s ease-in-out infinite .25s}
+.b9{height:44px;animation:barwave 1.1s ease-in-out infinite .2s}
+.b10{height:36px;animation:barwave 1.1s ease-in-out infinite .25s}
+.b11{height:44px;animation:barwave 1.1s ease-in-out infinite .3s}
+.b12{height:30px;animation:barwave 1.1s ease-in-out infinite .25s}
+.b13{height:40px;animation:barwave 1.1s ease-in-out infinite .2s}
+.b14{height:24px;animation:barwave 1.1s ease-in-out infinite .15s}
+.b15{height:36px;animation:barwave 1.1s ease-in-out infinite .1s}
+.b16{height:20px;animation:barwave 1.1s ease-in-out infinite .05s}
+.b17{height:28px;animation:barwave 1.1s ease-in-out infinite .1s}
+.b18{height:16px;animation:barwave 1.1s ease-in-out infinite .15s}
+.b19{height:10px;animation:barwave 1.1s ease-in-out infinite .2s}
+.b20{height:6px;animation:barwave 1.1s ease-in-out infinite .25s}
+@keyframes barwave{0%,100%{transform:scaleY(.25)}50%{transform:scaleY(1)}}
+.bar.muted{animation:none;transform:scaleY(.2);background:var(--border-2)}
+</style>
+
+<script>
+const SCRIPT=[
+  {delay:0,   text:"Hi, thanks for calling The Oak Room — I'm Poly, your virtual host. How can I help you today?", speaking:true},
+  {delay:3200, text:"", speaking:false, status:"Listening…"},
+  {delay:5000, text:"Of course! I'd love to help you book a table. How many guests will be joining you?", speaking:true},
+  {delay:8200, text:"", speaking:false, status:"Listening…"},
+  {delay:9800, text:"Perfect — a table for 4 on Saturday evening. Do you have a preferred time, or shall I check what's available?", speaking:true},
+  {delay:13500,text:"", speaking:false, status:"Listening…"},
+  {delay:15200,text:"7:30pm on Saturday works beautifully. Can I take a name for the reservation?", speaking:true},
+  {delay:18500,text:"", speaking:false, status:"Listening…"},
+  {delay:20000,text:"Wonderful! I've booked a table for 4 at 7:30pm this Saturday under your name. You'll receive a confirmation shortly. Is there anything else I can help with?", speaking:true},
+  {delay:25500,text:"", speaking:false, status:"Listening…"},
+  {delay:27000,text:"No problem at all. We look forward to welcoming you on Saturday. Have a wonderful evening!", speaking:true},
+];
+
+let callState='idle', timerInterval, scriptTimeout=[], elapsed=0;
+
+function setState(s){
+  ['idle','calling','active','ended'].forEach(n=>{
+    document.getElementById('state-'+n).style.display = n===s ? 'block':'none';
+  });
+}
+
+function startCall(){
+  callState='calling';
+  setState('calling');
+  document.getElementById('glow-rings').style.opacity='1';
+
+  const dots=['.','..','...'];
+  let di=0;
+  const dotInt=setInterval(()=>{
+    document.getElementById('calling-sub').textContent='Ringing'+dots[di++%3];
+  },500);
+
+  const t1=setTimeout(()=>{
+    clearInterval(dotInt);
+    callState='active';
+    setState('active');
+    startTimer();
+    runScript();
+  },2400);
+  scriptTimeout.push(t1);
+}
+
+function startTimer(){
+  elapsed=0;
+  timerInterval=setInterval(()=>{
+    elapsed++;
+    const m=Math.floor(elapsed/60), s=elapsed%60;
+    document.getElementById('timer').textContent=m+':'+(s<10?'0':'')+s;
+  },1000);
+}
+
+function runScript(){
+  SCRIPT.forEach(({delay,text,speaking,status})=>{
+    const t=setTimeout(()=>{
+      if(callState!=='active')return;
+      if(text){
+        document.getElementById('transcript-text').textContent=text;
+        document.getElementById('poly-status').textContent='Speaking…';
+        setWave(true);
+      } else {
+        document.getElementById('poly-status').textContent=status||'Listening…';
+        setWave(false);
+      }
+    },delay);
+    scriptTimeout.push(t);
+  });
+  // auto-end after full script
+  const autoEnd=setTimeout(endCall, SCRIPT[SCRIPT.length-1].delay+4000);
+  scriptTimeout.push(autoEnd);
+}
+
+function setWave(active){
+  document.querySelectorAll('.bar').forEach(b=>{
+    b.classList.toggle('muted',!active);
+  });
+}
+
+function endCall(){
+  if(callState==='idle')return;
+  callState='ended';
+  clearInterval(timerInterval);
+  scriptTimeout.forEach(clearTimeout);
+  scriptTimeout=[];
+  document.getElementById('glow-rings').style.opacity='0';
+  setWave(false);
+  setState('ended');
+}
+
+function resetCall(){
+  callState='idle';
+  document.getElementById('transcript-text').textContent='';
+  document.getElementById('timer').textContent='0:00';
+  setState('idle');
+}
+</script>
+
 <!-- ① AUDIO CHALLENGE -->
 <section class="challenge" id="challenge">
   <div class="centered" style="max-width:600px;margin:0 auto">
