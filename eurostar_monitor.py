@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Eurostar Snap Ticket Monitor
-Watches all slots on a given date and alerts when any ticket becomes available.
+Watches all slots across multiple dates and alerts when any ticket becomes available.
 """
 
 import urllib.request
@@ -10,18 +10,16 @@ import re
 import time
 import subprocess
 import sys
-import argparse
+import os
 from datetime import datetime
 
 # ── Configuration ─────────────────────────────────────────────────────────────
-DEFAULT_DATE = "2026-04-12"
-DEFAULT_ORIGIN = "8727100"       # Paris Gare du Nord
-DEFAULT_DESTINATION = "7015400"  # London St Pancras
-CHECK_INTERVAL_SECONDS = 120     # how often to poll (2 minutes)
-# ──────────────────────────────────────────────────────────────────────────────
-
-import os
+WATCH_DATES = ["2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12"]
+ORIGIN = "8727100"       # Paris Gare du Nord
+DESTINATION = "7015400"  # London St Pancras
+CHECK_INTERVAL_SECONDS = 120
 SLACK_WEBHOOK_URL = os.environ.get("SLACK_WEBHOOK_URL", "")
+# ──────────────────────────────────────────────────────────────────────────────
 
 HEADERS = {
     "User-Agent": (
@@ -36,15 +34,14 @@ HEADERS = {
 }
 
 
-def build_url(date: str, origin: str, destination: str) -> str:
+def build_url(date: str) -> str:
     return (
         f"https://snap.eurostar.com/fr-fr/search"
-        f"?adult=1&origin={origin}&destination={destination}&outbound={date}"
+        f"?adult=1&origin={ORIGIN}&destination={DESTINATION}&outbound={date}"
     )
 
 
 def fetch_availability(url: str):
-    """Fetch the page and return pageProps dict, or None on failure."""
     try:
         req = urllib.request.Request(url, headers=HEADERS)
         with urllib.request.urlopen(req, timeout=20) as resp:
@@ -55,8 +52,7 @@ def fetch_availability(url: str):
 
     match = re.search(
         r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>',
-        html,
-        re.DOTALL,
+        html, re.DOTALL,
     )
     if not match:
         print("  [!] Could not find __NEXT_DATA__ in page")
@@ -71,53 +67,44 @@ def fetch_availability(url: str):
 
 
 def get_available_slots(props: dict) -> list:
-    """Return list of available slots: [{time, seats, price, booking_url}]"""
     available = []
-    slots = props.get("outboundTimeSlots") or []
-    for slot in slots:
+    for slot in props.get("outboundTimeSlots") or []:
         fare = slot.get("fare")
         if not fare:
             continue
         window = slot.get("departureWindow", {})
         earliest = window.get("earliest", "")
-        # Extract time portion "HH:MM" from "YYYY-MM-DD HH:MM"
         dep_time = earliest.split(" ")[-1] if " " in earliest else earliest
-        seats = fare.get("seats", "?")
-        price = fare.get("prices", {}).get("displayPrice", "?")
         available.append({
             "time": dep_time,
-            "seats": seats,
-            "price": price,
-            "window": f"{earliest} → {window.get('latest', '')}",
+            "seats": fare.get("seats", "?"),
+            "price": fare.get("prices", {}).get("displayPrice", "?"),
         })
     return available
 
 
-def notify(title: str, message: str, url: str) -> None:
-    """Send a macOS notification, a Slack message, and open the booking URL."""
-    # macOS notification
-    script = (
-        f'display notification "{message}" '
-        f'with title "{title}" '
-        f'sound name "Glass"'
-    )
-    subprocess.run(["osascript", "-e", script], check=False)
-
-    # Slack message
+def send_slack(title: str, message: str, url: str) -> None:
+    if not SLACK_WEBHOOK_URL:
+        return
     payload = json.dumps({
         "text": f"*{title}*\n{message}\n<{url}|Book now>",
     }).encode("utf-8")
     try:
         req = urllib.request.Request(
-            SLACK_WEBHOOK_URL,
-            data=payload,
-            headers={"Content-Type": "application/json"},
-            method="POST",
+            SLACK_WEBHOOK_URL, data=payload,
+            headers={"Content-Type": "application/json"}, method="POST",
         )
         urllib.request.urlopen(req, timeout=10)
     except Exception as e:
         print(f"  [!] Slack notification failed: {e}")
 
+
+def notify(title: str, message: str, url: str) -> None:
+    # macOS notification
+    script = f'display notification "{message}" with title "{title}" sound name "Glass"'
+    subprocess.run(["osascript", "-e", script], check=False)
+    # Slack
+    send_slack(title, message, url)
     # Open browser
     subprocess.run(["open", url], check=False)
 
@@ -127,102 +114,60 @@ def log(msg: str) -> None:
     print(f"[{ts}] {msg}", flush=True)
 
 
-def run_monitor(url: str, date: str, interval: int, once: bool) -> None:
-    log(f"Monitoring April 12 tickets: Paris → London")
-    log(f"URL: {url}")
-    log(f"Checking every {interval}s — Ctrl+C to stop\n")
-
-    last_available_times = set()
-
-    while True:
+def check_all_dates():
+    """Check all watch dates. Returns list of (date, slots) where slots is non-empty."""
+    found = []
+    for date in WATCH_DATES:
+        url = build_url(date)
         props = fetch_availability(url)
         if props is None:
-            log("Failed to fetch — will retry")
-            time.sleep(interval)
+            log(f"  [!] Failed to fetch {date}")
             continue
-
-        available = get_available_slots(props)
-
-        if available:
-            summary = ", ".join(
-                f"{s['time']} (€{s['price']}, {s['seats']} seats)" for s in available
-            )
-            log(f"✅  AVAILABLE: {summary}")
-
-            # Only notify when new slots appear
-            new_times = {s["time"] for s in available}
-            newly_available = new_times - last_available_times
-            if newly_available:
-                msg = " | ".join(
-                    f"{s['time']} €{s['price']} ({s['seats']} seats)"
-                    for s in available
-                    if s["time"] in newly_available
-                )
-                notify(
-                    title="🚂 Eurostar Snap — BUY NOW",
-                    message=f"April 12 Paris→London: {msg}",
-                    url=url,
-                )
-
-            last_available_times = new_times
-
-            if once:
-                log("--once flag set, exiting.")
-                break
+        slots = get_available_slots(props)
+        if slots:
+            summary = ", ".join(f"{s['time']} €{s['price']} ({s['seats']} seats)" for s in slots)
+            log(f"✅  {date}: {summary}")
+            found.append((date, slots, url))
         else:
-            log(f"❌  All slots sold out for {date}")
-            last_available_times = set()
+            log(f"❌  {date}: sold out")
+    return found
 
+
+def run_monitor(interval: int) -> None:
+    log(f"Monitoring April 9–12 Paris → London")
+    log(f"Checking every {interval}s — Ctrl+C to stop\n")
+
+    # Track which (date, time) combos we've already alerted on
+    alerted = set()
+
+    while True:
+        found = check_all_dates()
+        for date, slots, url in found:
+            for slot in slots:
+                key = (date, slot["time"])
+                if key not in alerted:
+                    notify(
+                        title="🚂 Eurostar Snap — BUY NOW",
+                        message=f"{date} Paris→London: {slot['time']} €{slot['price']} ({slot['seats']} seats)",
+                        url=url,
+                    )
+                    alerted.add(key)
+        print(flush=True)
         time.sleep(interval)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(
-        description="Monitor Eurostar Snap ticket availability for April 12."
-    )
-    parser.add_argument(
-        "--date", default=DEFAULT_DATE,
-        help="Travel date YYYY-MM-DD (default: %(default)s)",
-    )
-    parser.add_argument(
-        "--interval", type=int, default=CHECK_INTERVAL_SECONDS,
-        help="Seconds between checks (default: %(default)s)",
-    )
-    parser.add_argument(
-        "--once", action="store_true",
-        help="Exit after the first available ticket is detected",
-    )
-    parser.add_argument(
-        "--check-once", action="store_true",
-        help="Single check and exit (for testing)",
-    )
-    args = parser.parse_args()
-
-    url = build_url(args.date, DEFAULT_ORIGIN, DEFAULT_DESTINATION)
-
-    if args.check_once:
-        props = fetch_availability(url)
-        if not props:
-            print("Failed to fetch page.")
-            sys.exit(1)
-        available = get_available_slots(props)
-        if available:
-            for s in available:
-                print(f"✅  {s['time']}  |  {s['seats']} seats  |  €{s['price']}")
-            msg = " | ".join(
-                f"{s['time']} €{s['price']} ({s['seats']} seats)" for s in available
-            )
-            notify(
-                title="🚂 Eurostar Snap — BUY NOW",
-                message=f"April 12 Paris→London: {msg}",
-                url=url,
-            )
-        else:
-            print(f"❌  All slots sold out for {args.date}")
+    # GitHub Actions / CI: single check, send Slack if anything found
+    if "--check-once" in sys.argv:
+        found = check_all_dates()
+        if found:
+            for date, slots, url in found:
+                msg = ", ".join(f"{s['time']} €{s['price']} ({s['seats']} seats)" for s in slots)
+                send_slack("🚂 Eurostar Snap — BUY NOW", f"{date} Paris→London: {msg}", url)
         sys.exit(0)
 
     try:
-        run_monitor(url, args.date, args.interval, args.once)
+        run_monitor(CHECK_INTERVAL_SECONDS)
     except KeyboardInterrupt:
         print("\nStopped.")
 
