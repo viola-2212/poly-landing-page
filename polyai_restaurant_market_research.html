@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+:root{--green:#c8f04d;--bg:#0f0f0f;--bg2:#181818;--bg3:#222;--border:#2a2a2a;--text:#e8e8e8;--muted:#888;--dim:#555}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;display:flex;min-height:100vh}
+nav{width:210px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto}
+nav .logo{padding:0 16px 16px;border-bottom:1px solid var(--border);margin-bottom:10px}
+nav .logo span{color:var(--green);font-weight:700;font-size:15px}
+nav .logo p{color:var(--muted);font-size:10px;margin-top:2px}
+nav a{display:block;padding:6px 16px;color:var(--muted);text-decoration:none;font-size:12px;border-left:2px solid transparent;transition:all .15s}
+nav a:hover{color:var(--text);background:var(--bg3)}
+nav a.active{color:var(--green);border-left-color:var(--green);background:rgba(200,240,77,.06)}
+.nav-section{padding:12px 16px 4px;color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+main{flex:1;padding:32px 40px;max-width:920px}
+section{margin-bottom:52px;scroll-margin-top:20px}
+h1{font-size:24px;font-weight:600;margin-bottom:6px}
+h2{font-size:18px;font-weight:600;margin-bottom:14px}
+h3{font-size:14px;font-weight:600;margin-bottom:10px}
+.subtitle{color:var(--muted);font-size:12px;margin-bottom:20px}
+.tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px}
+.tg{background:rgba(200,240,77,.15);color:var(--green)}
+.tr{background:rgba(220,50,50,.15);color:#f87171}
+.ta{background:rgba(245,158,11,.15);color:#fbbf24}
+.tb{background:rgba(59,130,246,.15);color:#60a5fa}
+.tz{background:rgba(100,100,100,.2);color:#aaa}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.stat-n{font-size:22px;font-weight:700;color:var(--green)}
+.stat-l{font-size:11px;color:var(--muted);margin-top:3px}
+.info-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px}
+.info-box.green{border-left:3px solid var(--green)}
+.info-box.red{border-left:3px solid #f87171}
+.info-box.amber{border-left:3px solid #fbbf24}
+.info-box.blue{border-left:3px solid #60a5fa}
+.info-box h4{font-size:12px;font-weight:600;margin-bottom:6px}
+.info-box p,.info-box li{font-size:11px;color:#aaa;line-height:1.6}
+.info-box ul{padding-left:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.comp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.comp-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.comp-hd{padding:12px 14px;border-bottom:1px solid var(--border)}
+.comp-name{font-size:14px;font-weight:600}
+.comp-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.comp-stats{display:flex;border-bottom:1px solid var(--border)}
+.cs{flex:1;padding:8px 10px;border-right:1px solid var(--border);text-align:center}
+.cs:last-child{border-right:none}
+.cs-n{font-size:13px;font-weight:600;color:var(--green)}
+.cs-l{font-size:10px;color:var(--muted);margin-top:1px}
+.comp-body{padding:10px 14px}
+.feat-row{display:flex;gap:6px;margin-bottom:5px;align-items:flex-start}
+.dot{width:5px;height:5px;border-radius:50%;margin-top:4px;flex-shrink:0}
+.dot-g{background:#4ade80}.dot-r{background:#f87171}.dot-a{background:#fbbf24}
+.feat-txt{font-size:11px;color:#bbb;line-height:1.4}
+.feat-txt b{color:var(--text);font-weight:500}
+.data-table{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:12px}
+.data-table th{background:var(--bg3);color:var(--muted);font-weight:500;font-size:10px;text-transform:uppercase;letter-spacing:.05em;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.data-table td{padding:9px 12px;border-bottom:1px solid var(--border);color:#bbb;vertical-align:top}
+.data-table tr:last-child td{border-bottom:none}
+.data-table .nm{font-weight:500;color:var(--text)}
+.dead{text-decoration:line-through;color:var(--dim)}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.bar-lbl{font-size:12px;color:#bbb;width:120px;flex-shrink:0;font-weight:500}
+.bar-wrap{flex:1;background:var(--bg3);border-radius:3px;height:18px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:8px}
+.bar-fill span{font-size:10px;font-weight:600}
+.bar-pct{font-size:12px;color:var(--muted);width:34px;text-align:right;flex-shrink:0}
+.bar-note{font-size:10px;color:var(--dim);width:130px;flex-shrink:0}
+.tab-bar{display:flex;border-bottom:1px solid var(--border);margin-bottom:16px}
+.tab-btn{padding:7px 14px;font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.tab-btn.on{color:var(--green);border-bottom-color:var(--green)}
+.tab-panel{display:none}.tab-panel.on{display:block}
+.matrix{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.matrix-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.matrix-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.new-badge{background:rgba(200,240,77,.15);color:var(--green);font-size:10px;font-weight:600;padding:1px 7px;border-radius:4px;margin-left:6px}
+hr{border:none;border-top:1px solid var(--border);margin:24px 0}
+footer{color:var(--dim);font-size:11px;padding:20px 0;border-top:1px solid var(--border);margin-top:40px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo"><span>PolyAI</span><p>Restaurant Vertical — May 2026</p></div>
+  <div class="nav-section">Overview</div>
+  <a href="#summary" onclick="sa(this)">Executive summary</a>
+  <a href="#opportunity" onclick="sa(this)">The opportunity</a>
+  <div class="nav-section">Competition</div>
+  <a href="#competitors" onclick="sa(this)">Voice AI competitors</a>
+  <a href="#platforms-us" onclick="sa(this)">US booking platforms</a>
+  <a href="#platforms-uk" onclick="sa(this)">UK booking platforms</a>
+  <a href="#platform-first" onclick="sa(this)">Platform voice AI threat</a>
+  <a href="#google" onclick="sa(this)">Google's role</a>
+  <div class="nav-section">Markets</div>
+  <a href="#market-share" onclick="sa(this)">Market share by country</a>
+  <a href="#segments" onclick="sa(this)">Customer segments</a>
+  <div class="nav-section">Integration</div>
+  <a href="#api" onclick="sa(this)">API readiness</a>
+  <a href="#olo-fork" onclick="sa(this)">Olo · TheFork · Dojo</a>
+  <div class="nav-section">Strategy</div>
+  <a href="#priorities" onclick="sa(this)">PolyAI priorities</a>
+  <a href="#gaps" onclick="sa(this)">Gaps to close</a>
+</nav>
+
+<main>
+<div style="margin-bottom:28px">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+    <span class="tag tg">Market Research</span>
+    <span style="color:var(--dim);font-size:11px">Updated May 2026</span>
+    <span style="background:rgba(200,240,77,.1);color:var(--green);font-size:10px;padding:2px 8px;border-radius:4px">v2 — includes Olo, TheFork, Dojo, new UK/US platforms</span>
+  </div>
+  <h1>Restaurant Voice AI — Competitive Landscape</h1>
+  <p class="subtitle">Complete market intelligence for PolyAI's restaurant vertical — voice AI competitors, all booking platforms in US and UK, market share by country, API availability, and strategic priorities. Updated with Olo, TheFork, Dojo, Access Collins, Quandoo, Eveve, and other newly researched platforms.</p>
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+<section id="summary">
+  <h2>Executive summary</h2>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-n">$49B</div><div class="stat-l">Restaurant voice AI market by 2029</div></div>
+    <div class="stat-card"><div class="stat-n">43%</div><div class="stat-l">Restaurant calls that go unanswered</div></div>
+    <div class="stat-card"><div class="stat-n">$27K</div><div class="stat-l">Annual revenue lost per location from missed calls</div></div>
+    <div class="stat-card"><div class="stat-n">749K</div><div class="stat-l">Total US restaurants — addressable market</div></div>
+  </div>
+  <div class="info-box green">
+    <h4>PolyAI's position — May 2026</h4>
+    <p>PolyAI enters the restaurant vertical with $200M+ in funding, best-in-class voice quality, 45 languages, and an OpenTable integration. Early results: Melting Pot $250K from after-hours bookings, Côté Brasserie 76% conversion. Critical challenge: competitors have broader platform coverage. All major booking platforms (Yelp, SevenRooms, OpenTable marketplace) are building first-party voice AI — the window for third-party voice AI integration is narrowing.</p>
+  </div>
+
+  <!-- PARTNERSHIP PRIORITY TABLE -->
+  <h3 style="margin-bottom:12px">Which platform should we partner with next?</h3>
+  <table class="data-table" style="margin-bottom:20px">
+    <thead>
+      <tr><th style="width:28px">Priority</th><th>Platform</th><th>Why</th><th>What we need to do</th><th>Effort</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align:center;font-size:16px">1️⃣</td>
+        <td class="nm">Olo <span class="tag tg" style="margin-left:4px">US ordering</span></td>
+        <td>Olo powers food ordering for 500+ big US chains (Shake Shack, Wingstop). Right now if a customer calls and wants to order food, PolyAI can't do that. Olo fixes this. They just opened a Partner Program in Feb 2026 — the door is literally open. Competitors (Hostie, SoundHound) are already in.</td>
+        <td>Apply to the Olo Connect Partner Program. This is a <b>quick win</b> — engineering can start as soon as we sign up.</td>
+        <td><span class="tag tg">Low — do now</span></td>
+      </tr>
+      <tr>
+        <td style="text-align:center;font-size:16px">2️⃣</td>
+        <td class="nm">ResDiary <span class="tag tg" style="margin-left:4px">UK · IE · AU</span></td>
+        <td>The #1 booking platform in Ireland (45%), #2 in UK (25%), and major in Australia (18%). Has a clean, well-documented API. Zero voice AI on their platform right now — none of our competitors have built it either. One integration unlocks three countries.</td>
+        <td>Build the API integration. Technical work only — no sales negotiation needed first.</td>
+        <td><span class="tag tg">Low — build immediately</span></td>
+      </tr>
+      <tr>
+        <td style="text-align:center;font-size:16px">3️⃣</td>
+        <td class="nm">SevenRooms <span class="tag ta" style="margin-left:4px">London · AU · luxury</span></td>
+        <td>Dominates London fine dining and is the #1 booking platform in all of Australia. They built their own voice AI but have zero named customers using it yet — PolyAI can win on voice quality and cross-platform capability.</td>
+        <td>Technical work — their API exists but is complex. Another voice AI company (Axify) already built on it, so we know it's possible.</td>
+        <td><span class="tag ta">Medium — start next</span></td>
+      </tr>
+      <tr>
+        <td style="text-align:center;font-size:16px">4️⃣</td>
+        <td class="nm">TheFork <span class="tag ta" style="margin-left:4px">Europe · AU</span></td>
+        <td>55,000 restaurants across France, Spain, Italy, Belgium, Netherlands, and Australia — one integration unlocks all of Europe and Australia simultaneously. Has a proper, documented B2B API. They are building their own AI fast (OpenAI partnership) so the window to get in as a partner is narrowing.</td>
+        <td>Start a partnership conversation. Position as the phone channel that complements TheFork's digital booking — they handle online discovery, PolyAI handles the phone calls.</td>
+        <td><span class="tag ta">BD + build — H2 2026</span></td>
+      </tr>
+      <tr>
+        <td style="text-align:center;font-size:16px">⛔</td>
+        <td class="nm">Resy (AmEx) <span class="tag tr" style="margin-left:4px">Blocked</span></td>
+        <td>25,000 upscale US restaurants. Attractive market — their restaurants pay $249–899/mo just for booking software. But <b>Resy has deliberately shut down their public API</b> and does not give access to third parties. The only way in is through a company called Rooam, which AmEx owns and controls. This is not something PolyAI can build around.</td>
+        <td><b>Blocked by API access.</b> Not a priority until Resy decides to open up their platform to partners. Monitor for any change in their API policy — if they ever open it, move this to #1 immediately given the market size.</td>
+        <td><span class="tag tr">Blocked — no action now</span></td>
+      </tr>
+      <tr>
+        <td style="text-align:center;font-size:16px">👀</td>
+        <td class="nm">Dojo <span class="tag tz" style="margin-left:4px">Watch · UK only</span></td>
+        <td>Dojo is more than a walk-in system. It handles <b>both advance reservations and virtual queuing</b> in one platform, with a <b>consumer discovery app of 850,000+ UK users</b>. They have ~8% UK market share, and are one of only 8 platforms in Google AI Mode UK (April 2026) — giving them strong organic discovery. They also have a documented EPOS Data API that supports reservation creation, updates, and deletion. <br><br>However, <b>no voice AI works with Dojo today</b> — not PolyAI, not Slang, not Hostie, nobody. Their API is designed for POS integration partners, not voice AI specifically. And their restaurant base skews <b>UK SMB</b> — the type of operators unlikely to pay PolyAI's ~$300/mo price point.</td>
+        <td>Don't build now — SMB customer base is a price mismatch for PolyAI. But <b>worth monitoring</b> given: real API exists, good UK market share, Google AI Mode UK partner, 850k consumer app users. If Dojo moves upmarket or opens their API more broadly to voice AI players, they become a relevant UK integration target quickly.</td>
+        <td><span class="tag tz">Monitor — not now</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box red">
+    <h4>Why Resy is blocked — plain English</h4>
+    <p>Resy closed their public API on purpose — they don't want random apps connecting to their restaurant data. Unlike OpenTable or ResDiary where any developer can sign up and start building, Resy requires permission from AmEx directly before anyone gets access. <b>There is no technical workaround.</b> PolyAI cannot build a Resy integration until Resy decides to open their platform — which they have given no signals of doing. Keep monitoring, but don't spend time or engineering resources on it now.</p>
+  </div>
+
+  <div class="info-box amber">
+    <h4>The most urgent development — May 2026</h4>
+    <p>Tock is dead (merging into Resy, summer 2026). TheFork partnered with OpenAI Operator. SevenRooms launched Voice AI with no named customers yet. Olo launched a tiered Connect Partner Program in Feb 2026 — an open invitation PolyAI has not yet accepted. ResDiary covers UK + Ireland + Australia with zero voice AI. Google AI Mode UK (April 10, 2026) has 8 booking platform partners — none include a phone answering layer.</p>
+  </div>
+</section>
+
+<!-- OPPORTUNITY -->
+<section id="opportunity">
+  <h2>The opportunity</h2>
+  <div class="grid2">
+    <div class="info-box">
+      <h4>Why restaurants need voice AI</h4>
+      <ul>
+        <li>43–58% of calls go unanswered during peak hours</li>
+        <li>69% of Americans give up if no one answers the phone</li>
+        <li>Only 1 in 3 callers tries again after a missed call</li>
+        <li>Average restaurant loses $27K/year from missed calls</li>
+        <li>High-volume venues lose up to $292K annually</li>
+        <li>32% of UK/Irish diners still call to book directly</li>
+      </ul>
+    </div>
+    <div class="info-box">
+      <h4>Market tailwinds</h4>
+      <ul>
+        <li>Restaurant labour turnover averages 79.6% annually</li>
+        <li>89% of Americans comfortable interacting with restaurant AI</li>
+        <li>82% of restaurant executives increasing AI investment</li>
+        <li>Voice AI market growing at 34.8% CAGR to $47.5B by 2034</li>
+        <li>391% ROI from PolyAI (Forrester Total Economic Impact)</li>
+        <li>Monthly upside per location: $3K–$18K</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- VOICE AI COMPETITORS -->
+<section id="competitors">
+  <h2>Voice AI competitors</h2>
+  <p class="subtitle">All 14 listed in OpenTable's Phone Automation marketplace. Key rivals: Slang, Hostie, Sadie. Updated with May 2026 intelligence.</p>
+  <div class="comp-grid">
+    <div class="comp-card">
+      <div class="comp-hd">
+        <div class="comp-name">Slang.ai</div>
+        <div class="comp-sub">NYC · founded 2019 · ex-Spotify/Google</div>
+        <div style="margin-top:6px"><span class="tag ta">$68M raised · Series B Feb 2026</span></div>
+      </div>
+      <div class="comp-stats">
+        <div class="cs"><div class="cs-n">2,000+</div><div class="cs-l">locations</div></div>
+        <div class="cs"><div class="cs-n">96%</div><div class="cs-l">CSAT</div></div>
+        <div class="cs"><div class="cs-n">$399–599</div><div class="cs-l">/mo</div></div>
+      </div>
+      <div class="comp-body">
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>25M call data moat</b> — largest training dataset in category</div></div>
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>Only CSAT publisher</b> — 96% on every call, leading trust signal</div></div>
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>Tripleseat exclusive</b> — private events locked up</div></div>
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt">SOC II Type 2 certified · OpenTable, SevenRooms, Yelp integrations</div></div>
+        <div class="feat-row"><div class="dot dot-r"></div><div class="feat-txt"><b>No live phone ordering</b> — SMS redirect only (Square POS coming Q1 2026)</div></div>
+        <div class="feat-row"><div class="dot dot-r"></div><div class="feat-txt">English + Spanish only — zero multilingual beyond that</div></div>
+        <div class="feat-row"><div class="dot dot-a"></div><div class="feat-txt">Series B roadmap: guest memory, multi-modal, hotel expansion</div></div>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-hd">
+        <div class="comp-name">Hostie</div>
+        <div class="comp-sub">SF · founded 2023 · ex-Instacart, restaurant owner</div>
+        <div style="margin-top:6px"><span class="tag tb">$4M seed · Google Gradient Ventures</span></div>
+      </div>
+      <div class="comp-stats">
+        <div class="cs"><div class="cs-n">200+</div><div class="cs-l">locations</div></div>
+        <div class="cs"><div class="cs-n">97%</div><div class="cs-l">CSAT</div></div>
+        <div class="cs"><div class="cs-n">$199–399</div><div class="cs-l">/mo</div></div>
+      </div>
+      <div class="comp-body">
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>Widest integrations</b> — OpenTable, Resy, Yelp, SevenRooms, Toast, Square, Olo</div></div>
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>20+ languages</b> — strongest multilingual of all competitors</div></div>
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>Omnichannel</b> — phone, SMS, email, Instagram DMs, Google Maps</div></div>
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt">"Built by operators" — founder owns restaurants, strong narrative</div></div>
+        <div class="feat-row"><div class="dot dot-r"></div><div class="feat-txt">200 locations only — unproven at chain scale</div></div>
+        <div class="feat-row"><div class="dot dot-r"></div><div class="feat-txt">$4M funding — &lt;15 employees, limited runway vs well-funded rivals</div></div>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-hd">
+        <div class="comp-name">Sadie</div>
+        <div class="comp-sub">Montreal · Valsoft acquirer · hospitality DNA</div>
+        <div style="margin-top:6px"><span class="tag tz">Permanent capital · Valsoft portfolio</span></div>
+      </div>
+      <div class="comp-stats">
+        <div class="cs"><div class="cs-n">1,200+</div><div class="cs-l">via Foodtastic</div></div>
+        <div class="cs"><div class="cs-n">30-day</div><div class="cs-l">free trial</div></div>
+        <div class="cs"><div class="cs-n">$99–299</div><div class="cs-l">/mo</div></div>
+      </div>
+      <div class="comp-body">
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>Cheapest in market</b> — $99/mo entry, 4–6x below Slang</div></div>
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>Live POS ordering</b> — Payfacto (Maitre'D, Veloce) with KDU print</div></div>
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>Foodtastic deal</b> — 1,200 locations, 27 brands (March 2026)</div></div>
+        <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt">Hotel + restaurant: Cloudbeds, Oracle, Mews, Yanolja, Deliverect</div></div>
+        <div class="feat-row"><div class="dot dot-r"></div><div class="feat-txt">Canada-first — Payfacto POS not used in US market</div></div>
+        <div class="feat-row"><div class="dot dot-r"></div><div class="feat-txt">Weak US brand awareness</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>PolyAI vs key competitors</h3>
+  <table class="data-table">
+    <thead><tr><th>Dimension</th><th>PolyAI</th><th>Slang</th><th>Hostie</th><th>Sadie</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">Funding</td><td><span class="tag tg">$200M+</span></td><td><span class="tag ta">$68M</span></td><td><span class="tag tr">$4M</span></td><td><span class="tag tz">Permanent (Valsoft)</span></td></tr>
+      <tr><td class="nm">Languages</td><td><span class="tag tg">45</span></td><td><span class="tag tr">2 (EN+ES)</span></td><td><span class="tag ta">20+</span></td><td><span class="tag tz">Not disclosed</span></td></tr>
+      <tr><td class="nm">Reservation platforms</td><td><span class="tag ta">OT only</span></td><td><span class="tag tg">OT, SR, Yelp, Trip.</span></td><td><span class="tag tg">OT, Resy, SR, Yelp</span></td><td><span class="tag ta">OT, Libro</span></td></tr>
+      <tr><td class="nm">POS / phone ordering</td><td><span class="tag tr">None</span></td><td><span class="tag ta">Square Q1 2026</span></td><td><span class="tag tg">Toast, Square, Olo</span></td><td><span class="tag ta">Payfacto (CA only)</span></td></tr>
+      <tr><td class="nm">CSAT published</td><td><span class="tag tr">No</span></td><td><span class="tag tg">96%</span></td><td><span class="tag tg">97%</span></td><td><span class="tag tr">No</span></td></tr>
+      <tr><td class="nm">Setup time</td><td><span class="tag tr">6 weeks</span></td><td><span class="tag tg">30 min</span></td><td><span class="tag ta">Same day</span></td><td><span class="tag tg">Same day</span></td></tr>
+      <tr><td class="nm">Geography</td><td><span class="tag tg">Global, 45 langs</span></td><td><span class="tag ta">US-only</span></td><td><span class="tag ta">US-only</span></td><td><span class="tag ta">Canada + UK</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- US BOOKING PLATFORMS -->
+<section id="platforms-us">
+  <h2>US booking platform ecosystem <span class="new-badge">Updated</span></h2>
+  <p class="subtitle">Complete map of reservation platforms PolyAI needs to know in the US — including platforms not previously covered.</p>
+  <table class="data-table">
+    <thead><tr><th>Platform</th><th>Scale</th><th>Model</th><th>Target segment</th><th>PolyAI relevance</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">OpenTable</td><td>60k global, ~28k US</td><td>Marketplace + SaaS, per-cover</td><td>Broad — casual to fine dining</td><td><span class="tag tg">Live ✓</span></td></tr>
+      <tr><td class="nm">Resy (AmEx)</td><td>~25k (post-Tock merger)</td><td>SaaS flat fee — $249–899/mo</td><td>Trendy / chef-driven / upscale</td><td><span class="tag ta">Call AmEx — no public API</span></td></tr>
+      <tr><td class="nm">Yelp Guest Manager</td><td>11k+ restaurants</td><td>$149/mo flat — own voice AI (Yelp Host)</td><td>SMB, independents, neighbourhood dining</td><td><span class="tag tr">Skip — builds own AI</span></td></tr>
+      <tr><td class="nm">Toast Tables</td><td>120k+ via Toast POS</td><td>Free for Toast POS subscribers</td><td>Any restaurant on Toast POS</td><td><span class="tag ta">Build via Toast API</span></td></tr>
+      <tr><td class="nm">SevenRooms</td><td>10k+ global</td><td>CRM-first SaaS, enterprise pricing</td><td>Luxury / hotel F&B / casinos / nightlife</td><td><span class="tag ta">Build — complex API</span></td></tr>
+      <tr><td class="nm">Wisely (Olo)</td><td>Enterprise chains</td><td>Data/CRM platform, acquired by Olo</td><td>Enterprise chains (Chili's, Dine Brands)</td><td><span class="tag tz">Not a booking system</span></td></tr>
+      <tr><td class="nm">Eat App <span class="new-badge">New</span></td><td>Growing — ME origin, global</td><td>Freemium — no per-cover fees</td><td>Independent/mid-market, data-driven operators</td><td><span class="tag ta">Has API — low priority</span></td></tr>
+      <tr><td class="nm">TouchBistro Reservations <span class="new-badge">New</span></td><td>Canada origin, US expanding</td><td>POS + reservations bundle</td><td>Restaurants on TouchBistro POS</td><td><span class="tag tz">Niche — skip for now</span></td></tr>
+      <tr><td class="nm">SpotOn Reserve <span class="new-badge">New</span></td><td>Growing US POS player</td><td>POS-native reservations</td><td>Mid-market restaurants on SpotOn POS</td><td><span class="tag tz">Monitor — future integration</span></td></tr>
+      <tr><td class="nm">Tablein <span class="new-badge">New</span></td><td>Small — SMB focus</td><td>$99–149/mo, simple</td><td>Small restaurants, basic needs</td><td><span class="tag tr">Price mismatch</span></td></tr>
+      <tr><td class="nm"><span class="dead">Tock</span></td><td><span class="dead">Merging into Resy summer 2026</span></td><td><span class="dead">Dead</span></td><td><span class="dead">Fine dining / events</span></td><td><span class="tag tz">Remove from roadmap</span></td></tr>
+    </tbody>
+  </table>
+  <div class="info-box amber">
+    <h4>Resy pricing now public (2026) — major upside for PolyAI</h4>
+    <p>Resy charges Basic $249/mo, Pro $399/mo, Enterprise $899/mo. These are restaurants already spending $250–900/mo on reservations software. A $300/mo PolyAI add-on is a natural upsell. The BD challenge via Rooam (AmEx middleware) is now even more worth solving — Resy's customers can clearly afford PolyAI.</p>
+  </div>
+</section>
+
+<!-- UK BOOKING PLATFORMS -->
+<section id="platforms-uk">
+  <h2>UK booking platform ecosystem <span class="new-badge">New section</span></h2>
+  <p class="subtitle">The UK has a more fragmented market than the US with several platforms not well-known outside the market.</p>
+  <table class="data-table">
+    <thead><tr><th>Platform</th><th>Scale</th><th>Model</th><th>Target segment</th><th>PolyAI relevance</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">OpenTable (UK)</td><td>1,021 tracked UK customers</td><td>Marketplace + SaaS, per-cover</td><td>Hotel dining, upscale, tourist-facing</td><td><span class="tag tg">Live ✓</span></td></tr>
+      <tr><td class="nm">ResDiary</td><td>9,000+ global, ~25% UK market</td><td>Flat fee £89–245/mo, 0% commission</td><td>Mid-market independents, 3–15 site groups</td><td><span class="tag tg">Build now — top priority</span></td></tr>
+      <tr><td class="nm">SevenRooms (UK)</td><td>934 tracked UK customers — near 50/50 with OT in London upscale</td><td>CRM SaaS, enterprise pricing</td><td>Fine dining, luxury hotels, nightlife</td><td><span class="tag ta">Build — complex API</span></td></tr>
+      <tr><td class="nm">TheFork</td><td>55k global, ~12% UK</td><td>Marketplace, per-cover + subscription</td><td>Tourist-area, mid-market, Michelin visibility</td><td><span class="tag ta">Has B2B API — explore</span></td></tr>
+      <tr><td class="nm">Access Collins / DesignMyNight <span class="new-badge">New</span></td><td><b>8,000+ venues</b> · 34.3M bookings in 2025 · 3.9M monthly visitors · 61M monthly Google impressions</td><td>Subscription SaaS · both are under The Access Group (same parent as ResDiary) · £2/cover from DMN platform</td><td>Bars, pubs, casual dining, nightlife, event-led venues — <b>strong in London specifically</b></td><td><span class="tag tg">Google AI Mode UK partner · high priority for London</span></td></tr>
+      <tr><td class="nm">Dojo (WalkUp)</td><td>~8% UK · 850k+ consumer app users</td><td>Payment terminal + advance reservations + virtual queuing. EPOS Data API exists.</td><td>SMB cafés + restaurants, walk-in and booking venues</td><td><span class="tag tz">API exists but SMB price mismatch — monitor</span></td></tr>
+      <tr><td class="nm">Quandoo <span class="new-badge">New</span></td><td>15,000–17,000 restaurants, 12 countries</td><td>Subscription + per-cover marketplace fee</td><td>Independent restaurants, international visibility</td><td><span class="tag ta">Has API — lower priority</span></td></tr>
+      <tr><td class="nm">Eveve <span class="new-badge">New</span></td><td>2,000+ restaurants, 24 countries — claims #3 UK by volume</td><td>Custom pricing ~$150–300/mo</td><td>High-volume restaurants, US now largest market</td><td><span class="tag ta">Has API — worth investigating</span></td></tr>
+      <tr><td class="nm">Square Reservations (UK) <span class="new-badge">New</span></td><td>Part of Square UK ecosystem</td><td>Bundled with Square POS</td><td>SMB restaurants on Square POS</td><td><span class="tag ta">Via Square POS integration</span></td></tr>
+      <tr><td class="nm">Favouritetable <span class="new-badge">New</span></td><td>UK small player</td><td>No-commission flat fee</td><td>UK independents wanting basic booking</td><td><span class="tag tr">Too small — skip</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box blue">
+    <h4>Access Collins / DesignMyNight — the hidden UK gem</h4>
+    <p>DesignMyNight is the consumer discovery platform (3.9M monthly users, 500k newsletter subscribers). Access Collins is the backend booking system used by those venues. It powers pubs, bars, restaurants, and experience venues across the UK. It's a Google AI Mode UK partner, integrates with 70+ software partners, and is already connected to ResDiary for cross-platform bookings. The £2/cover from the DMN platform is cheap for the restaurants, suggesting a price-sensitive base — but the event and group booking use case is high-value for voice AI (large party confirmations, pre-order calls).</p>
+  </div>
+
+  <div class="info-box green">
+    <h4>Eveve — the overlooked UK player with US ambitions</h4>
+    <p>Founded 2007 in the UK, Eveve claims to be the third largest supplier in the UK by online reservation volume. Critically, its largest market has now shifted to the US — processing over 4 million online diners annually there. 2,000+ restaurants across 24 countries. Proprietary table management (TELOS). Has API integrations with TripAdvisor and Google. No published pricing — custom quotes only. This is worth a direct conversation. If Eveve's US footprint is real, a PolyAI integration could unlock a meaningful US long-tail market PolyAI hasn't addressed.</p>
+  </div>
+</section>
+
+<!-- PLATFORM FIRST-PARTY VOICE AI -->
+<section id="platform-first">
+  <h2>Platform-first voice AI — the growing threat</h2>
+  <p class="subtitle">Every major booking platform is building its own voice AI, closing the window for third-party players.</p>
+  <div class="grid2">
+    <div class="info-box red">
+      <h4>SevenRooms Voice AI — live, but no named customers yet</h4>
+      <p>SevenRooms built first-party voice AI powered by their full CRM (guest spend history, preferences, visit frequency). Same-day go-live, dozens of voice/accent options. Product page is live but zero published case studies or CSAT — it's too new. PolyAI's window: cross-platform chains can't use SR Voice AI at their non-SR venues. No evidence of any publicly named restaurant using it.</p>
+    </div>
+    <div class="info-box red">
+      <h4>Yelp Host — $99–149/mo, built in-house, Oct 2025</h4>
+      <p>Yelp built proprietary voice AI (not white-labelled) using LLMs + Yelp's own restaurant data. 24/7 reservation management, real-time wait times, SMS follow-up, spam filtering. Only works with Yelp Guest Manager. US + Canada. No CSAT published. At $99–149/mo it effectively undercuts every competitor for Yelp-native customers.</p>
+    </div>
+  </div>
+  <div class="info-box green">
+    <h4>OpenTable — marketplace model, no first-party voice AI yet</h4>
+    <p>OpenTable is the only major platform still running a third-party voice AI marketplace (14 providers including PolyAI). OpenTable Media launched Feb 2026 (advertising product) — not voice AI. Watch closely: if OpenTable builds first-party, PolyAI's primary distribution channel changes overnight. For now, this is the most important window to maximise.</p>
+  </div>
+  <div class="info-box amber">
+    <h4>ResDiary — no voice AI at all. The biggest opportunity.</h4>
+    <p>ResPhone is basic call routing, not AI. ResDiary Evo adds AI for no-show prediction and VIP recognition, but no voice answering. 9,000+ venues, UK/IE/AU, solid REST API. One integration unlocks three markets with zero voice AI competition. This window will close once The Access Group (ResDiary's parent) decides to build it themselves.</p>
+  </div>
+</section>
+
+<!-- GOOGLE -->
+<section id="google">
+  <h2>Google's role in the ecosystem</h2>
+  <div class="grid2">
+    <div class="info-box green">
+      <h4>Reserve with Google (live, 50+ countries)</h4>
+      <ul>
+        <li>Direct table booking from Google Search and Google Maps</li>
+        <li>Google is the front door — booking flows through a partner platform API</li>
+        <li>Approved partners: OpenTable, ResDiary, SevenRooms, TheFork, Dojo, and others</li>
+        <li>0% commission, free for restaurants — adds 5–30% more bookings</li>
+        <li>Key insight: platform API integration = automatic Google booking support</li>
+      </ul>
+    </div>
+    <div class="info-box amber">
+      <h4>Google AI Mode — launched UK April 10, 2026</h4>
+      <ul>
+        <li>AI conversational booking from Google Search — no app needed</li>
+        <li>75M daily active users globally as of Jan 2026</li>
+        <li>UK partners: TheFork, SevenRooms, ResDiary, OpenTable, Dojo, Mozrest, Foodhub, DesignMyNight</li>
+        <li>US: live since Nov 2025 — Google AI can call restaurants on behalf of users</li>
+        <li>Google AI Mode and PolyAI are parallel channels into the same platform APIs</li>
+      </ul>
+    </div>
+  </div>
+  <div class="info-box">
+    <h4>Strategic insight: build platform integrations once, serve every channel</h4>
+    <p>Google passes a digital booking to the OpenTable API. PolyAI passes a phone booking to the same OpenTable API. Build the integration once — both channels benefit. Any restaurant that wants to capture bookings from ALL channels (web, app, Google Search, phone) needs both Google AI Mode partnerships and PolyAI.</p>
+  </div>
+</section>
+
+<!-- MARKET SHARE -->
+<section id="market-share">
+  <h2>Market share by country</h2>
+  <div class="tab-bar">
+    <button class="tab-btn on" onclick="st('us',this)">🇺🇸 US</button>
+    <button class="tab-btn" onclick="st('uk',this)">🇬🇧 UK</button>
+    <button class="tab-btn" onclick="st('ie',this)">🇮🇪 Ireland</button>
+    <button class="tab-btn" onclick="st('ca',this)">🇨🇦 Canada</button>
+    <button class="tab-btn" onclick="st('au',this)">🇦🇺 Australia</button>
+  </div>
+
+  <div class="tab-panel on" id="tab-us">
+    <div class="bar-row"><div class="bar-lbl">OpenTable</div><div class="bar-wrap"><div class="bar-fill" style="width:46%;background:#7F77DD"><span style="color:#fff;font-size:10px">46%</span></div></div><div class="bar-pct">46%</div><div class="bar-note">↓ from 51% in 2022</div></div>
+    <div class="bar-row"><div class="bar-lbl">Yelp</div><div class="bar-wrap"><div class="bar-fill" style="width:14%;background:#D4537E"><span style="color:#fff;font-size:10px">14%</span></div></div><div class="bar-pct">14%</div><div class="bar-note">↑ +11% in 2 yrs</div></div>
+    <div class="bar-row"><div class="bar-lbl">Resy</div><div class="bar-wrap"><div class="bar-fill" style="width:13%;background:#D85A30"><span style="color:#fff;font-size:10px">13%</span></div></div><div class="bar-pct">13%</div><div class="bar-note">↓ -4% over 2 yrs</div></div>
+    <div class="bar-row"><div class="bar-lbl">Toast Tables</div><div class="bar-wrap"><div class="bar-fill" style="width:7%;background:#BA7517"><span style="color:#fff;font-size:10px">7%</span></div></div><div class="bar-pct">7%</div><div class="bar-note">Entered 2023</div></div>
+    <div class="bar-row"><div class="bar-lbl">SevenRooms</div><div class="bar-wrap"><div class="bar-fill" style="width:4%;background:#185FA5"><span style="color:#fff;font-size:10px">4%</span></div></div><div class="bar-pct">4%</div><div class="bar-note">Luxury/hotel only</div></div>
+    <div class="bar-row"><div class="bar-lbl">Others</div><div class="bar-wrap"><div class="bar-fill" style="width:16%;background:#444"><span style="color:#fff;font-size:10px">16%</span></div></div><div class="bar-pct">16%</div><div class="bar-note">Eat App, Eveve, etc.</div></div>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px">PolyAI's OpenTable integration covers the market leader. Critical gaps: Resy (13%), Toast Tables (7%, fastest growing).</p>
+  </div>
+
+  <div class="tab-panel" id="tab-uk">
+    <div class="bar-row"><div class="bar-lbl">OpenTable</div><div class="bar-wrap"><div class="bar-fill" style="width:28%;background:#7F77DD"><span style="color:#fff;font-size:10px">28%</span></div></div><div class="bar-pct">28%</div><div class="bar-note">1,021 tracked customers</div></div>
+    <div class="bar-row"><div class="bar-lbl">ResDiary</div><div class="bar-wrap"><div class="bar-fill" style="width:25%;background:#1D9E75"><span style="color:#fff;font-size:10px">25%</span></div></div><div class="bar-pct">25%</div><div class="bar-note">£89–245/mo flat fee</div></div>
+    <div class="bar-row"><div class="bar-lbl">SevenRooms</div><div class="bar-wrap"><div class="bar-fill" style="width:18%;background:#185FA5"><span style="color:#fff;font-size:10px">18%</span></div></div><div class="bar-pct">18%</div><div class="bar-note">934 UK customers</div></div>
+    <div class="bar-row"><div class="bar-lbl">TheFork</div><div class="bar-wrap"><div class="bar-fill" style="width:8%;background:#D85A30"><span style="color:#fff;font-size:10px">8%</span></div></div><div class="bar-pct">8%</div><div class="bar-note">Tourist/mid-market</div></div>
+    <div class="bar-row"><div class="bar-lbl">Access Collins/DMN</div><div class="bar-wrap"><div class="bar-fill" style="width:7%;background:#8B5CF6"><span style="color:#fff;font-size:10px">7%</span></div></div><div class="bar-pct">7%</div><div class="bar-note">Bars, pubs, events</div></div>
+    <div class="bar-row"><div class="bar-lbl">Quandoo</div><div class="bar-wrap"><div class="bar-fill" style="width:5%;background:#BA7517"><span style="color:#fff;font-size:10px">5%</span></div></div><div class="bar-pct">5%</div><div class="bar-note">International marketplace</div></div>
+    <div class="bar-row"><div class="bar-lbl">Dojo + Others</div><div class="bar-wrap"><div class="bar-fill" style="width:9%;background:#444"><span style="color:#fff;font-size:10px">9%</span></div></div><div class="bar-pct">9%</div><div class="bar-note">Eveve, Dojo, Favouritetable</div></div>
+    <div class="info-box" style="margin-top:12px">
+      <h4>London premium segment — nearly 50/50 OpenTable vs SevenRooms</h4>
+      <p>OpenTable has 1,021 UK customers; SevenRooms has 934. In London upscale dining, they are near-equal. ResDiary dominates outside London and in the provinces. Google AI Mode UK (April 2026) includes TheFork, SevenRooms, ResDiary, OpenTable, Dojo, Mozrest, Foodhub, and DesignMyNight as booking partners.</p>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-ie">
+    <div class="bar-row"><div class="bar-lbl">ResDiary</div><div class="bar-wrap"><div class="bar-fill" style="width:45%;background:#1D9E75"><span style="color:#fff;font-size:10px">~45%</span></div></div><div class="bar-pct">~45%</div><div class="bar-note">RAI official partner</div></div>
+    <div class="bar-row"><div class="bar-lbl">OpenTable</div><div class="bar-wrap"><div class="bar-fill" style="width:22%;background:#7F77DD"><span style="color:#fff;font-size:10px">~22%</span></div></div><div class="bar-pct">~22%</div><div class="bar-note">Dublin upscale/hotel</div></div>
+    <div class="bar-row"><div class="bar-lbl">TheFork</div><div class="bar-wrap"><div class="bar-fill" style="width:12%;background:#D85A30"><span style="color:#fff;font-size:10px">~12%</span></div></div><div class="bar-pct">~12%</div><div class="bar-note">Tourist-facing</div></div>
+    <div class="bar-row"><div class="bar-lbl">Others</div><div class="bar-wrap"><div class="bar-fill" style="width:21%;background:#444"><span style="color:#fff;font-size:10px">~21%</span></div></div><div class="bar-pct">~21%</div><div class="bar-note">Direct, Quandoo, Eveve</div></div>
+    <div class="info-box amber" style="margin-top:12px">
+      <h4>Ireland — highest ROI opportunity per venue</h4>
+      <p>62% of venues affected by no-shows (highest in region). £5,102 average annual revenue lost per venue. 32% of Irish diners still call directly. ResDiary is the RAI official partner — one integration unlocks the entire Irish restaurant association. Small market (~10k restaurants) but very high pain, very clear ROI.</p>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-ca">
+    <div class="bar-row"><div class="bar-lbl">OpenTable</div><div class="bar-wrap"><div class="bar-fill" style="width:38%;background:#7F77DD"><span style="color:#fff;font-size:10px">~38%</span></div></div><div class="bar-pct">~38%</div><div class="bar-note">986 tracked customers</div></div>
+    <div class="bar-row"><div class="bar-lbl">Libro</div><div class="bar-wrap"><div class="bar-fill" style="width:18%;background:#1D9E75"><span style="color:#fff;font-size:10px">~18%</span></div></div><div class="bar-pct">~18%</div><div class="bar-note">Sadie integrated</div></div>
+    <div class="bar-row"><div class="bar-lbl">Resy</div><div class="bar-wrap"><div class="bar-fill" style="width:10%;background:#D85A30"><span style="color:#fff;font-size:10px">~10%</span></div></div><div class="bar-pct">~10%</div><div class="bar-note">207 tracked</div></div>
+    <div class="bar-row"><div class="bar-lbl">SevenRooms</div><div class="bar-wrap"><div class="bar-fill" style="width:8%;background:#185FA5"><span style="color:#fff;font-size:10px">~8%</span></div></div><div class="bar-pct">~8%</div><div class="bar-note">Luxury/hotel</div></div>
+    <div class="bar-row"><div class="bar-lbl">Others</div><div class="bar-wrap"><div class="bar-fill" style="width:26%;background:#444"><span style="color:#fff;font-size:10px">~26%</span></div></div><div class="bar-pct">~26%</div><div class="bar-note">NowBookIt, Tock, etc.</div></div>
+    <div class="info-box red" style="margin-top:12px">
+      <h4>Canada — Sadie's fortress. Don't prioritise.</h4>
+      <p>Sadie has Foodtastic (1,200+ locations, 27 brands), Libro integration, Payfacto POS, and home-market advantage. OpenTable covers 38% — use PolyAI's existing integration for Toronto/Vancouver upscale only. Do not invest engineering in Libro or Payfacto.</p>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="tab-au">
+    <div class="bar-row"><div class="bar-lbl">TheFork</div><div class="bar-wrap"><div class="bar-fill" style="width:32%;background:#D85A30"><span style="color:#fff;font-size:10px">~32%</span></div></div><div class="bar-pct">~32%</div><div class="bar-note">Consumer marketplace</div></div>
+    <div class="bar-row"><div class="bar-lbl">SevenRooms</div><div class="bar-wrap"><div class="bar-fill" style="width:28%;background:#185FA5"><span style="color:#fff;font-size:10px">~28%</span></div></div><div class="bar-pct">~28%</div><div class="bar-note">#1 SR global market!</div></div>
+    <div class="bar-row"><div class="bar-lbl">ResDiary</div><div class="bar-wrap"><div class="bar-fill" style="width:18%;background:#1D9E75"><span style="color:#fff;font-size:10px">~18%</span></div></div><div class="bar-pct">~18%</div><div class="bar-note">2,100+ AU venues</div></div>
+    <div class="bar-row"><div class="bar-lbl">OpenTable</div><div class="bar-wrap"><div class="bar-fill" style="width:10%;background:#7F77DD"><span style="color:#fff;font-size:10px">~10%</span></div></div><div class="bar-pct">~10%</div><div class="bar-note">PolyAI integrated</div></div>
+    <div class="bar-row"><div class="bar-lbl">NowBookIt</div><div class="bar-wrap"><div class="bar-fill" style="width:8%;background:#BA7517"><span style="color:#fff;font-size:10px">~8%</span></div></div><div class="bar-pct">~8%</div><div class="bar-note">AU-native SMB</div></div>
+    <div class="info-box red" style="margin-top:12px">
+      <h4>Australia — PolyAI's hardest market without SevenRooms + ResDiary</h4>
+      <p>OpenTable covers only ~10% of AU. SevenRooms is their #1 global market (32% of their entire customer base = 2,100+ AU venues). Without SevenRooms and ResDiary integrations, PolyAI reaches fewer than 1 in 10 Australian restaurants. SevenRooms integration is the single highest-impact build for Australia.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SEGMENTS -->
+<section id="segments">
+  <h2>Platform customer segments</h2>
+  <p class="subtitle">Who each platform targets, where PolyAI's ~$300/mo price point fits — and crucially, which platforms serve high-end restaurants most likely to want and afford voice AI.</p>
+
+  <div class="info-box green" style="margin-bottom:16px">
+    <h4>Why high-end restaurants are PolyAI's best target customers</h4>
+    <p>The more upscale the restaurant, the stronger the case for voice AI on three dimensions: <b>(1) Volume</b> — fine dining and upscale venues receive significantly more inbound calls (reservations, dietary queries, special occasion planning, private dining enquiries) than casual dining. <b>(2) Affordability</b> — a restaurant charging £100+ per head per person can easily justify £300/mo for voice AI; a café charging £12 for lunch cannot. <b>(3) Brand stakes</b> — a missed call or robotic-sounding AI damages a luxury restaurant's reputation far more than it damages a casual chain's. PolyAI's human-like voice quality is most valuable precisely where brand experience matters most.</p>
+  </div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>Target restaurant type</th>
+        <th>Avg. spend per cover</th>
+        <th>Voice AI appetite</th>
+        <th>PolyAI price fit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="nm">SevenRooms</td>
+        <td>Fine dining, luxury hotels, casinos, nightlife</td>
+        <td><span class="tag tg">£80–250+</span></td>
+        <td><span class="tag tg">Very high — brand stakes are enormous, call volume is high, budget is there</span></td>
+        <td><span class="tag tg">Strong fit</span></td>
+      </tr>
+      <tr>
+        <td class="nm">Resy (AmEx)</td>
+        <td>Chef-driven, trendy, upscale NYC/LA/London</td>
+        <td><span class="tag tg">£60–150</span></td>
+        <td><span class="tag tg">Very high — Resy restaurants pay £249–899/mo for booking software alone, can clearly afford PolyAI</span></td>
+        <td><span class="tag tg">Strong fit</span></td>
+      </tr>
+      <tr>
+        <td class="nm">OpenTable</td>
+        <td>Broad — casual to fine dining, hotel restaurants</td>
+        <td><span class="tag ta">£35–100</span></td>
+        <td><span class="tag tg">High for upscale tier — already integrated, Melting Pot and Côté prove the model</span></td>
+        <td><span class="tag tg">Already live</span></td>
+      </tr>
+      <tr>
+        <td class="nm">Access Collins/DMN</td>
+        <td>Bars, pubs, casual dining chains, event-led venues</td>
+        <td><span class="tag ta">£25–60</span></td>
+        <td><span class="tag ta">Medium — high call volume for group bookings and events, but average spend per cover is lower</span></td>
+        <td><span class="tag ta">Moderate — group booking use case is strong</span></td>
+      </tr>
+      <tr>
+        <td class="nm">ResDiary</td>
+        <td>Mid-market independents, groups of 3–15 sites</td>
+        <td><span class="tag ta">£30–70</span></td>
+        <td><span class="tag ta">Medium — independents care about missed calls but are more price-sensitive</span></td>
+        <td><span class="tag ta">Moderate — £89–245/mo already, so £300 is a stretch</span></td>
+      </tr>
+      <tr>
+        <td class="nm">Toast Tables</td>
+        <td>Restaurants on Toast POS — broad segment</td>
+        <td><span class="tag ta">£20–60</span></td>
+        <td><span class="tag ta">Medium — high volume of ordering calls where Olo integration adds the most value</span></td>
+        <td><span class="tag ta">Fit via Toast + Olo ordering combo</span></td>
+      </tr>
+      <tr>
+        <td class="nm">TheFork</td>
+        <td>Tourist-area, mid-market, Michelin (visibility play)</td>
+        <td><span class="tag ta">£25–80</span></td>
+        <td><span class="tag ta">Medium — Michelin-starred TheFork users have high appetite; tourist-focused venues less so</span></td>
+        <td><span class="tag ta">Selective — target Michelin tier only</span></td>
+      </tr>
+      <tr>
+        <td class="nm">Yelp Guest Manager</td>
+        <td>SMB independents, neighbourhood dining</td>
+        <td><span class="tag tr">£12–30</span></td>
+        <td><span class="tag tr">Low — Yelp Host at $149/mo already serves this segment, price ceiling too low for PolyAI</span></td>
+        <td><span class="tag tr">Poor fit</span></td>
+      </tr>
+      <tr>
+        <td class="nm">Dojo</td>
+        <td>UK SMB cafés, independents, walk-in venues</td>
+        <td><span class="tag tr">£8–20</span></td>
+        <td><span class="tag tr">Low — price mismatch, walk-in model means fewer advance booking calls</span></td>
+        <td><span class="tag tr">Poor fit — monitor only</span></td>
+      </tr>
+      <tr>
+        <td class="nm">NowBookIt (AU)</td>
+        <td>Australian SMB cafés, casual dining</td>
+        <td><span class="tag tr">AU$15–35</span></td>
+        <td><span class="tag tr">Low — SMB, price-sensitive, low call volume relative to PolyAI's cost</span></td>
+        <td><span class="tag tr">Poor fit — skip</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box amber">
+    <h4>The sweet spot — where PolyAI wins</h4>
+    <p>PolyAI's ideal restaurant customer is on <b>SevenRooms, Resy, or the upscale tier of OpenTable</b> — venues charging £60–250+ per cover, where a missed call means losing a £400+ table, and where voice quality reflects directly on the brand. These restaurants already spend hundreds per month on booking software, are used to enterprise-grade tools, and have the budget. The further down the spend-per-cover scale you go, the harder it is to justify £300/mo and the less PolyAI's human-like voice quality provides differentiation over cheaper alternatives.</p>
+  </div>
+</section>
+
+<!-- API -->
+<section id="api">
+  <h2>API & integration readiness</h2>
+  <table class="data-table">
+    <thead><tr><th>Platform</th><th>API status</th><th>Integration path</th><th>Effort</th></tr></thead>
+    <tbody>
+      <tr><td class="nm">OpenTable</td><td><span class="tag tg">Full REST API ✓</span></td><td>Already live. Well-documented, actively supported for voice AI.</td><td><span class="tag tg">Done</span></td></tr>
+      <tr><td class="nm">ResDiary</td><td><span class="tag tg">Solid REST API ✓</span></td><td>"Straightforward integration" confirmed by dev community. Create/modify/cancel/availability all supported. Same API covers UK + IE + AU.</td><td><span class="tag tg">Low — build immediately</span></td></tr>
+      <tr><td class="nm">SevenRooms</td><td><span class="tag ta">API + Zapier</span></td><td>API exists. Axify voice AI has integrated it. Basic reservation create achievable; deep CRM requires partnership tier.</td><td><span class="tag ta">Medium — complex</span></td></tr>
+      <tr><td class="nm">Toast (+ Tables)</td><td><span class="tag tg">Full Toast API ✓</span></td><td>Toast partner marketplace. Tables reservations flow through Toast API. Build Toast POS first — Tables comes along.</td><td><span class="tag ta">Medium — via Toast POS</span></td></tr>
+      <tr><td class="nm">Resy (AmEx)</td><td><span class="tag ta">Call AmEx/Rooam — no public API, BD first</span></td><td>Must get permission from AmEx (via their gatekeeper company Rooam) before engineering can build anything. Not technical — needs a sales conversation with AmEx Global Dining.</td><td><span class="tag ta">BD conversation first</span></td></tr>
+      <tr><td class="nm">Olo</td><td><span class="tag tg">Full API ✓ + Partner Program</span></td><td>400+ integrated partners. Connect Partner Program launched Feb 2026 (Standard/Gold/Platinum tiers). SoundHound and Hostie already integrated for phone ordering. Apply immediately.</td><td><span class="tag tg">Join Connect Program now</span></td></tr>
+      <tr><td class="nm">TheFork</td><td><span class="tag ta">B2B API — Enterprise tier</span></td><td>docs.thefork.io confirmed. Booking flows, menu data, guest preferences. Available for Enterprise partners. OpenAI Operator partnership signals their own AI direction.</td><td><span class="tag ta">Medium — BD conversation first</span></td></tr>
+      <tr><td class="nm">Access Collins/DMN</td><td><span class="tag ta">API via Access Group</span></td><td>70+ integrations. Already connects with ResDiary. UK-only audience. £2/cover from DMN platform. Worth exploring for bars/events segment.</td><td><span class="tag ta">Low-medium</span></td></tr>
+      <tr><td class="nm">Quandoo</td><td><span class="tag ta">API — limited docs</span></td><td>API exists for reservation management. Less documented than major platforms. 15k restaurants across 12 countries. Worth investigating before building.</td><td><span class="tag ta">Investigate first</span></td></tr>
+      <tr><td class="nm">Eveve</td><td><span class="tag ta">API — custom</span></td><td>TELOS system. Has TripAdvisor and Google integrations. No published developer docs but claims #3 UK volume. Direct conversation needed.</td><td><span class="tag ta">Investigate</span></td></tr>
+      <tr><td class="nm">Libro (Canada)</td><td><span class="tag tg">API ✓ (Sadie uses it)</span></td><td>API confirmed accessible. Only relevant if PolyAI enters Canada seriously.</td><td><span class="tag tz">Canada only — low priority</span></td></tr>
+      <tr><td class="nm">Yelp</td><td><span class="tag tr">Restricted</span></td><td>Yelp Host is their own voice AI — won't enable third-party competitors.</td><td><span class="tag tr">Skip</span></td></tr>
+      <tr><td class="nm">Dojo</td><td><span class="tag tr">No reservation API</span></td><td>Walk-in queue management only. SMB customers can't afford PolyAI.</td><td><span class="tag tr">Skip</span></td></tr>
+      <tr><td class="nm"><span class="dead">Tock</span></td><td><span class="tag tz">Obsolete</span></td><td>Merging into Resy summer 2026. Remove from roadmap.</td><td><span class="tag tz">Remove</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- OLO THEFORK DOJO -->
+<section id="olo-fork">
+  <h2>Olo · TheFork · Dojo — partner assessment <span class="new-badge">New</span></h2>
+  <div class="grid3">
+    <div class="info-box green">
+      <h4>🟢 Olo — pursue immediately</h4>
+      <p>Olo is phone ordering infrastructure for 500+ enterprise chains (Shake Shack, Wingstop, Dine Brands). When a guest calls and wants to order food, PolyAI currently has no answer. Olo solves this. SoundHound and Hostie already integrated. Connect Partner Program (Feb 2026) is an open invitation. One integration unlocks phone ordering for 89k+ locations. US-only but that's PolyAI's primary market.</p>
+    </div>
+    <div class="info-box amber">
+      <h4>🟡 TheFork — explore carefully in H2 2026</h4>
+      <p>55k restaurants, 11 countries. B2B API is real (docs.thefork.io). Europe + Australia unlock in one integration. BUT: TheFork partnered with OpenAI Operator (Feb 2025) and launched its own AI voice search. They're building their own AI layer fast. Have the partnership conversation before they decide they don't need PolyAI. Frame as: "phone channel complement to TheFork's digital discovery."</p>
+    </div>
+    <div class="info-box red">
+      <h4>🔴 Dojo — skip entirely</h4>
+      <p>Dojo is a walk-in queue manager built on a WalkUp acquisition. Their restaurants don't take advance bookings. No reservation API. SMB customers can't afford PolyAI. Being in Google AI Mode UK doesn't require a Dojo integration. Time spent on Dojo is time not spent on ResDiary, SevenRooms, or Olo. Remove from roadmap.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRIORITIES -->
+<section id="priorities">
+  <h2>PolyAI strategic priorities — May 2026</h2>
+  <div class="matrix">
+    <div class="matrix-box" style="border-color:#4ade80">
+      <div class="matrix-title" style="color:#4ade80">Do now — 0–3 months</div>
+      <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>Join Olo Connect Partner Program</b> — open invitation, SoundHound + Hostie already integrated, unlocks phone ordering for US enterprise chains</div></div>
+      <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>Build ResDiary + Access Collins together</b> — both owned by The Access Group. Solid REST API, 34.3M bookings combined in 2025, covers UK provinces + Ireland + Australia (ResDiary) AND London bars/pubs/casual dining (Collins). One partnership conversation, two platforms, zero voice AI competition on either.</div></div>
+      <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>Publish CSAT score</b> — cheapest trust move available. Slang leads with 96%. PolyAI has the data (Melting Pot, Côté). Publish it.</div></div>
+      <div class="feat-row"><div class="dot dot-g"></div><div class="feat-txt"><b>Rooam/AmEx BD conversation</b> — Resy now $249–899/mo. Their customers can clearly afford PolyAI. Start the conversation now.</div></div>
+    </div>
+    <div class="matrix-box" style="border-color:#fbbf24">
+      <div class="matrix-title" style="color:#fbbf24">Build next — 3–9 months</div>
+      <div class="feat-row"><div class="dot dot-a"></div><div class="feat-txt"><b>Toast POS integration</b> — 120k+ US locations, every competitor building toward it, unlocks Toast Tables reservations</div></div>
+      <div class="feat-row"><div class="dot dot-a"></div><div class="feat-txt"><b>SevenRooms integration</b> — complex API but high value. Key for London upscale and Australia (#1 SR global market). Cross-platform pitch beats SR's own Voice AI.</div></div>
+      <div class="feat-row"><div class="dot dot-a"></div><div class="feat-txt"><b>TheFork BD conversation</b> — Europe + AU unlock. Must happen before TheFork builds their own phone answering layer.</div></div>
+      <div class="feat-row"><div class="dot dot-a"></div><div class="feat-txt"><b>Investigate Eveve</b> — claims #3 UK by volume, US now largest market, 2k restaurants in 24 countries. Worth a direct conversation.</div></div>
+    </div>
+    <div class="matrix-box" style="border-color:#555">
+      <div class="matrix-title" style="color:#888">Deprioritise / skip</div>
+      <div class="feat-row"><div class="dot" style="background:#555"></div><div class="feat-txt">Canada — Sadie's fortress. OpenTable integration is enough coverage for now.</div></div>
+      <div class="feat-row"><div class="dot" style="background:#555"></div><div class="feat-txt">Dojo — no API, wrong segment, wrong model.</div></div>
+      <div class="feat-row"><div class="dot" style="background:#555"></div><div class="feat-txt">Yelp — building own voice AI, restricted API.</div></div>
+      <div class="feat-row"><div class="dot" style="background:#555"></div><div class="feat-txt">Tock — absorbed into Resy summer 2026. Done.</div></div>
+      <div class="feat-row"><div class="dot" style="background:#555"></div><div class="feat-txt">Tablein / TableAgent — too small, price mismatch.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- GAPS -->
+<section id="gaps">
+  <h2>PolyAI's gaps to close</h2>
+  <div class="grid2">
+    <div class="info-box green">
+      <h4>Where PolyAI wins today</h4>
+      <ul>
+        <li>Voice quality — proprietary ASR + TTS, best in category</li>
+        <li>45 languages — beats all three main competitors combined</li>
+        <li>$200M+ funding — 3x Slang, 50x Hostie</li>
+        <li>Enterprise compliance — SOC II, uptime SLAs, Fortune 500 references</li>
+        <li>Proven results — Melting Pot $250K, Côté Brasserie 76% conversion</li>
+        <li>OpenTable integration — covers market leader in US and UK</li>
+      </ul>
+    </div>
+    <div class="info-box red">
+      <h4>Where PolyAI loses today</h4>
+      <ul>
+        <li>No POS / phone ordering — Sadie takes live orders, Slang adding Square, Hostie has Olo</li>
+        <li>No Resy or SevenRooms — Hostie has both live</li>
+        <li>No self-serve onboarding — 6 weeks vs 30-min Slang setup</li>
+        <li>No published CSAT — Slang leads trust with 96% score</li>
+        <li>No "made by operators" brand story — Hostie and Sadie own this narrative</li>
+        <li>Australia is nearly unreachable — OpenTable is only 10% of AU market</li>
+      </ul>
+    </div>
+  </div>
+  <h3>The core positioning message</h3>
+  <div class="info-box green">
+    <h4>What only PolyAI can say</h4>
+    <p style="margin-bottom:6px">"SevenRooms Voice AI works at your SevenRooms venues. Yelp Host works at your Yelp venues. Every platform is building their own — and locking you in. PolyAI is the only voice AI that spans every reservation system you operate, across every country you trade in, in every language your guests speak. One voice. Every platform. Every call."</p>
+    <p>This message gets stronger as more platforms build first-party voice AI — PolyAI's cross-platform capability becomes rarer and more valuable as the ecosystem closes.</p>
+  </div>
+  <footer><p>PolyAI Restaurant Vertical — Market Research · Updated May 2026 · v2 includes Olo, TheFork, Dojo, Access Collins, Quandoo, Eveve, updated competition data, and corrected Resy pricing. Sources: 6sense, BistroChat, Hostie, SevenRooms, Restaurant Business Online, QSR Magazine, CNBC, TheFork developer docs, Olo partner directory, Google developer documentation. All market share figures are estimates based on tracked customer data.</p></footer>
+</section>
+</main>
+
+<script>
+function sa(el){document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));el.classList.add('active')}
+function st(id,btn){document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('on'));document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));document.getElementById('tab-'+id).classList.add('on');btn.classList.add('on')}
+const secs=document.querySelectorAll('section[id]'),links=document.querySelectorAll('nav a');
+window.addEventListener('scroll',()=>{let c='';secs.forEach(s=>{if(window.scrollY>=s.offsetTop-60)c=s.id});links.forEach(a=>{a.classList.remove('active');if(a.getAttribute('href')==='#'+c)a.classList.add('active')})},{passive:true});
+</script>
+</body>
+</html>
