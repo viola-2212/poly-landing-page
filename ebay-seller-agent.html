@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eBay Seller Agent — PolyAI Open Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Inter+Display:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #141414;
+    --surface2: #1a1a1a;
+    --border: #242424;
+    --border2: #2e2e2e;
+    --text: #ffffff;
+    --muted: #888888;
+    --faint: #333333;
+    --accent: #ccff00;
+    --accent2: #e5ff80;
+    --amber: #f0a828;
+    --red: #ff5060;
+    --green: #00d97e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,13,13,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px; height: 56px;
+  }
+  .nav-logo { font-family: 'Inter Display', 'Inter', sans-serif; font-weight: 800; font-size: 16px; color: var(--accent); letter-spacing: -0.3px; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: var(--muted); font-size: 13px; text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ─── LAYOUT ─── */
+  .page { max-width: 1040px; margin: 0 auto; padding: 0 40px; }
+
+  section { padding: 80px 0; border-bottom: 1px solid var(--border); }
+  section:last-child { border-bottom: none; }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 100px 0 80px;
+    background: radial-gradient(ellipse 60% 40% at 70% -10%, rgba(204,255,0,0.07) 0%, transparent 65%);
+  }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(204,255,0,0.08); border: 1px solid rgba(204,255,0,0.2);
+    border-radius: 20px; padding: 4px 14px;
+    font-size: 12px; font-weight: 500; color: var(--accent);
+    letter-spacing: 0.5px; text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-family: 'Inter Display', 'Inter', sans-serif;
+    font-size: 52px; font-weight: 800; line-height: 1.08;
+    letter-spacing: -2px; color: #fff;
+    max-width: 720px; margin-bottom: 24px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-sub {
+    font-size: 17px; color: var(--muted); max-width: 560px; line-height: 1.7;
+    margin-bottom: 40px;
+  }
+  .hero-meta {
+    display: flex; gap: 32px; flex-wrap: wrap;
+  }
+  .hero-meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .hero-meta-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.6px; }
+  .hero-meta-value { font-family: 'Inter Display', 'Inter', sans-serif; font-size: 28px; font-weight: 700; color: #fff; }
+  .hero-meta-value span { font-size: 14px; color: var(--muted); font-family: 'Inter', sans-serif; font-weight: 400; }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-label { font-family: 'Inter', sans-serif;
+    font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--accent); font-weight: 600; margin-bottom: 12px;
+  }
+  h2 {
+    font-family: 'Inter Display', 'Inter', sans-serif; font-size: 32px; font-weight: 700;
+    letter-spacing: -0.8px; color: #fff; margin-bottom: 16px; line-height: 1.2;
+  }
+  .section-intro { color: var(--muted); font-size: 16px; max-width: 600px; line-height: 1.7; margin-bottom: 48px; }
+
+  /* ─── STORYLINE ─── */
+  .storyline { display: flex; flex-direction: column; gap: 2px; }
+  .story-step {
+    display: grid; grid-template-columns: 48px 1fr;
+    gap: 0 24px; align-items: start;
+  }
+  .story-connector {
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .story-num {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--surface2); border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Inter Display', 'Inter', sans-serif; font-size: 13px; font-weight: 700;
+    color: var(--accent); flex-shrink: 0;
+  }
+  .story-line {
+    width: 1px; flex: 1; min-height: 32px;
+    background: linear-gradient(to bottom, var(--border2), transparent);
+    margin-top: 4px;
+  }
+  .story-step:last-child .story-line { display: none; }
+  .story-body { padding: 4px 0 40px; }
+  .story-body h3 {
+    font-family: 'Inter Display', 'Inter', sans-serif; font-size: 18px; font-weight: 700;
+    color: #fff; margin-bottom: 8px;
+  }
+  .story-body p { color: var(--muted); font-size: 14px; line-height: 1.7; max-width: 580px; }
+  .story-body strong { color: var(--text); }
+  .story-highlight {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(0,255,157,0.07); border: 1px solid rgba(0,255,157,0.2);
+    border-radius: 6px; padding: 3px 10px; margin-top: 10px;
+    font-size: 12px; color: var(--accent2); font-weight: 500;
+  }
+
+  /* ─── MARKET SIZE ─── */
+  .market-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin-bottom: 40px;
+  }
+  .market-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px;
+    transition: border-color 0.2s;
+  }
+  .market-card:hover { border-color: var(--border2); }
+  .market-card.primary { border-color: rgba(204,255,0,0.25); background: linear-gradient(135deg, rgba(204,255,0,0.05), var(--surface)); }
+  .market-card-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .market-card-value { font-family: 'Inter Display', 'Inter', sans-serif; font-size: 36px; font-weight: 800; color: #fff; line-height: 1; margin-bottom: 6px; }
+  .market-card-value.accent { color: var(--accent); }
+  .market-card-value.green { color: var(--green); }
+  .market-card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  .platform-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 24px; }
+  .platform-table th {
+    text-align: left; padding: 10px 14px;
+    color: var(--muted); font-weight: 500; font-size: 12px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .platform-table td { padding: 11px 14px; border-bottom: 1px solid rgba(26,37,48,0.6); vertical-align: middle; }
+  .platform-table tr:last-child td { border-bottom: none; }
+  .platform-table tr:hover td { background: rgba(255,255,255,0.015); }
+  .best-row td { color: var(--accent); }
+  .best-row td:first-child { font-weight: 600; }
+  .tag-winner { background: rgba(204,255,0,0.1); border: 1px solid rgba(204,255,0,0.25); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: var(--accent); font-weight: 600; }
+  .tag-api { background: rgba(0,217,126,0.1); border: 1px solid rgba(0,217,126,0.25); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: var(--green); }
+  .tag-weak { background: rgba(90,112,128,0.1); border: 1px solid rgba(90,112,128,0.2); border-radius: 4px; padding: 2px 8px; font-size: 11px; color: var(--muted); }
+
+  /* ─── TIME COST ─── */
+  .time-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+  .time-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px;
+  }
+  .time-card h4 { font-family: 'Inter Display', 'Inter', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 16px; }
+  .time-bar-row { margin-bottom: 14px; }
+  .time-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+  .time-bar-label strong { color: var(--text); }
+  .time-bar-track { height: 6px; background: var(--faint); border-radius: 3px; overflow: hidden; }
+  .time-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+  .time-bar-fill.amber { background: var(--amber); }
+  .time-bar-fill.red { background: var(--red); }
+  .time-bar-fill.green { background: var(--green); }
+
+  .roi-box {
+    background: linear-gradient(135deg, rgba(0,255,157,0.06), rgba(204,255,0,0.04));
+    border: 1px solid rgba(0,255,157,0.2); border-radius: 12px; padding: 24px;
+    grid-column: 1 / -1;
+  }
+  .roi-box h4 { font-family: 'Inter Display', 'Inter', sans-serif; font-size: 15px; font-weight: 700; color: var(--accent2); margin-bottom: 12px; }
+  .roi-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 14px; }
+  .roi-row:last-child { margin-bottom: 0; }
+  .roi-label { color: var(--muted); min-width: 220px; }
+  .roi-value { color: #fff; font-weight: 500; }
+  .roi-highlight { color: var(--accent2); font-weight: 700; }
+
+  /* ─── WTP ─── */
+  .wtp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .wtp-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .wtp-card.highlight { border-color: rgba(204,255,0,0.3); background: linear-gradient(135deg, rgba(204,255,0,0.06), var(--surface)); }
+  .wtp-tier { font-size: 11px; text-transform: uppercase; letter-spacing: 0.6px; color: var(--muted); font-weight: 600; }
+  .wtp-price { font-family: 'Inter Display', 'Inter', sans-serif; font-size: 30px; font-weight: 800; color: #fff; }
+  .wtp-price span { font-size: 14px; color: var(--muted); font-family: 'Inter', sans-serif; font-weight: 400; }
+  .wtp-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  .wtp-anchor { font-size: 12px; color: var(--faint); margin-top: 4px; }
+
+  .arr-box {
+    background: var(--surface2); border: 1px solid var(--border2); border-radius: 12px; padding: 28px;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  }
+  .arr-item { }
+  .arr-item-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .arr-item-value { font-family: 'Inter Display', 'Inter', sans-serif; font-size: 22px; font-weight: 700; color: #fff; }
+  .arr-item-value.green { color: var(--green); }
+  .arr-item-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ─── COMPETITOR TABLE ─── */
+  .comp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .comp-table th {
+    text-align: left; padding: 11px 14px;
+    color: var(--muted); font-weight: 500; font-size: 12px; letter-spacing: 0.3px;
+    border-bottom: 1px solid var(--border); white-space: nowrap;
+  }
+  .comp-table td { padding: 13px 14px; border-bottom: 1px solid rgba(26,37,48,0.5); vertical-align: middle; }
+  .comp-table tr:last-child td { border-bottom: none; }
+  .comp-table tr:hover td { background: rgba(255,255,255,0.015); }
+
+  .prod-name { font-weight: 600; color: #fff; font-size: 14px; }
+  .prod-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .check { color: var(--green); font-size: 16px; }
+  .cross { color: var(--red); font-size: 16px; }
+  .cell-note { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
+  .cell-amber { color: var(--amber); font-size: 13px; }
+  .cell-green { color: var(--green); font-size: 13px; font-weight: 600; }
+  .cell-red { color: var(--red); font-size: 13px; }
+  .cell-grey { color: var(--muted); font-size: 13px; }
+
+  .polyai-comp-row td { background: rgba(204,255,0,0.04); border-top: 1px solid rgba(204,255,0,0.15); border-bottom: 1px solid rgba(204,255,0,0.15); }
+  .polyai-comp-row .prod-name { color: var(--accent); }
+  .poly-label { display: inline-block; background: rgba(204,255,0,0.12); border: 1px solid rgba(204,255,0,0.3); border-radius: 4px; padding: 1px 6px; font-size: 10px; font-weight: 700; color: var(--accent); letter-spacing: 0.5px; margin-left: 5px; vertical-align: middle; }
+  .cell-poly { color: var(--accent); font-size: 13px; font-weight: 600; }
+
+  /* ─── WHY NOW ─── */
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .why-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px;
+  }
+  .why-card-icon { font-size: 22px; margin-bottom: 12px; }
+  .why-card h4 { font-family: 'Inter Display', 'Inter', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .why-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .why-card p strong { color: var(--text); }
+
+  /* ─── DEMO ─── */
+  .demo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .demo-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px;
+    transition: border-color 0.2s;
+  }
+  .demo-card:hover { border-color: var(--border2); }
+  .demo-num { font-family: 'Inter Display', 'Inter', sans-serif; font-size: 28px; font-weight: 800; color: var(--faint); margin-bottom: 12px; }
+  .demo-card h4 { font-family: 'Inter Display', 'Inter', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .demo-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .demo-card p strong { color: var(--accent); }
+
+  /* ─── OPEN QS ─── */
+  .oq-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .oq-list li {
+    display: flex; gap: 14px; align-items: start;
+    padding: 16px 20px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    font-size: 14px; color: var(--muted); line-height: 1.5;
+  }
+  .oq-list li::before { content: '?'; min-width: 22px; height: 22px; background: rgba(204,255,0,0.1); border: 1px solid rgba(204,255,0,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 32px 40px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 1040px; margin: 0 auto;
+  }
+
+  /* ─── DIVIDER ─── */
+  .section-divider { height: 1px; background: var(--border); margin: 0; }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">PolyAI</div>
+  <div class="nav-links">
+    <a href="#story">Story</a>
+    <a href="#why-polyai">Why PolyAI</a>
+    <a href="#team">The Team</a>
+    <a href="#market">Market</a>
+    <a href="#time-cost">Seller Pain</a>
+    <a href="#competitors">Competitors</a>
+    <a href="#use-cases">Use Cases</a>
+    <a href="#demo">Demo Angles</a>
+    <a href="#open-questions">Open Questions</a>
+    <a href="#wtp">Willingness to Pay</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<div class="page">
+<section class="hero" id="top">
+  <div class="hero-eyebrow">PolyAI Open Platform · eBay Demo Justification</div>
+  <h1>Give every eBay seller a<br><span>24/7 buyer agent</span></h1>
+  <p class="hero-sub">A research brief justifying why eBay is PolyAI's strongest first target for the seller-side AI agent motion — and why no competitor has gotten there yet.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Active eBay Sellers</span>
+      <span class="hero-meta-value">17–20M <span>worldwide</span></span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Power Sellers (target)</span>
+      <span class="hero-meta-value">~700K <span>high-volume</span></span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">eBay Revenue</span>
+      <span class="hero-meta-value">$11.1B <span>2025</span></span>
+    </div>
+    <div class="hero-meta-item">
+      <span class="hero-meta-label">Buyer-facing agent tools</span>
+      <span class="hero-meta-value">0 <span>exist today</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ─── STORYLINE ─── -->
+<section id="story">
+  <div class="section-label">The Argument</div>
+  <h2>Why this makes sense</h2>
+  <p class="section-intro">Six steps from problem to PolyAI opportunity — the narrative you take into any internal or external conversation.</p>
+
+  <div class="storyline">
+
+    <div class="story-step">
+      <div class="story-connector"><div class="story-num">1</div><div class="story-line"></div></div>
+      <div class="story-body">
+        <h3>eBay sellers are drowning in buyer conversations</h3>
+        <p>A high-volume eBay seller with 200+ listings receives multiple buyer inquiries every day — "What's your best price?", "Does this ship to Canada?", "Any scratches?". The same questions, over and over. <strong>80% of eBay buyer inquiries are repetitive.</strong> A typical active seller spends 10–31 hours per month just on message handling — before accounting for Best Offer negotiation rounds. Some sellers are so fatigued by lowball Best Offers that they disable the feature entirely, missing serious buyers in the process.</p>
+        <span class="story-highlight">↳ Every unanswered message is a lost sale</span>
+      </div>
+    </div>
+
+    <div class="story-step">
+      <div class="story-connector"><div class="story-num">2</div><div class="story-line"></div></div>
+      <div class="story-body">
+        <h3>Response time is directly tied to revenue</h3>
+        <p>eBay's own data shows sellers responding within 4 hours see <strong>25% higher conversion rates</strong>. eBay now publicly displays seller response times on listings, creating algorithmic pressure to respond fast. Most sellers can't maintain sub-4-hour windows 24/7 — so they lose sales at 2am, on weekends, and during peak periods. A <strong>1% improvement in seller rating</strong> translates to 15–25% sales uplift through improved search ranking and buyer confidence.</p>
+        <span class="story-highlight">↳ 1% rating improvement = 15–25% more sales</span>
+      </div>
+    </div>
+
+    <div class="story-step">
+      <div class="story-connector"><div class="story-num">3</div><div class="story-line"></div></div>
+      <div class="story-body">
+        <h3>Existing tools help sellers manage the inbox — they don't replace them</h3>
+        <p>Tools like eDesk ($49–$69/mo) make the inbox faster to process. But a human still reads every message and clicks send. 3Dsellers' autoresponder is rule-based: keyword match → template reply, capped at 3 messages per conversation per day. <strong>No tool on the market can hold a real, contextual buyer conversation autonomously.</strong> No tool can negotiate a Best Offer back-and-forth in natural language. The gap is completely unaddressed.</p>
+        <span class="story-highlight">↳ Incumbent tools are workflow managers, not agents</span>
+      </div>
+    </div>
+
+    <div class="story-step">
+      <div class="story-connector"><div class="story-num">4</div><div class="story-line"></div></div>
+      <div class="story-body">
+        <h3>eBay has not invested in seller conversation AI</h3>
+        <p>eBay has built impressive AI for listing creation (Magical Listing, used by 10M+ sellers) and launched a buyer-side shopping agent with OpenAI Operator (Jan 2026). But when it comes to seller-side buyer conversations, the gap is stark — eBay.ai only handles basic shipping and item detail questions, <strong>excludes negotiation entirely</strong>, and faces widespread seller resistance. No investment has gone into autonomous, conversational seller agents. That is the space PolyAI can own.</p>
+        <span class="story-highlight">↳ eBay chose OpenAI for buyer-side — the seller conversation side is open for PolyAI</span>
+      </div>
+    </div>
+
+    <div class="story-step">
+      <div class="story-connector"><div class="story-num">5</div><div class="story-line"></div></div>
+      <div class="story-body">
+        <h3>PolyAI's Open Platform is exactly the right product for this</h3>
+        <p>PolyAI is rebranding around Open Platform — an omnichannel agent infrastructure that goes beyond voice to include messaging, chat, and digital channels, backed by a growing suite of out-of-the-box integrations. This is no longer a contact-centre-only play. The platform is built for any conversation surface — including the eBay Messaging API. Sellers configure their sales agent once — product knowledge, pricing floor, brand voice, return policy — and deploy it across every channel they operate. <strong>eBay is the enterprise customer. Sellers self-serve.</strong> PolyAI distributes via eBay's Developer Programme (340K+ registered developers) or App Marketplace. One enterprise deal unlocks 17M sellers across every channel they sell on.</p>
+        <span class="story-highlight">↳ Open Platform + omnichannel messaging + integrations = the right product at the right time</span>
+      </div>
+    </div>
+
+    <div class="story-step">
+      <div class="story-connector"><div class="story-num">6</div><div class="story-line"></div></div>
+      <div class="story-body">
+        <h3>Existing tools are helpers, not agents — the autonomous gap is real</h3>
+        <p>Seller tools already exist and sellers pay for them: 3Dsellers, eDesk, ChannelReply. But they're rule-based inbox managers — a human still reads and sends every reply. PolyAI's CAIP competitors (Sierra, Cognigy, Parloa) are contact-centre-first and structurally can't scale to millions of individual sellers. Intercom/Fin is the closest risk — strong chat AI expanding into ecommerce — but has no eBay Messaging API and no understanding of auction or Best Offer dynamics. The benchmark proving autonomous seller conversation works at scale: Taobao's Dianxiaomi was used <strong>1.5 billion times in a single shopping festival</strong>. The Western equivalent doesn't exist. PolyAI can build it — but the window will close.</p>
+        <span class="story-highlight">↳ Seller tools exist — autonomous seller AI on eBay doesn't. That's the gap.</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── STRATEGIC FIT ─── -->
+<section id="why-polyai">
+  <div class="section-label">Strategic Fit</div>
+  <h2>Why this is the perfect move for PolyAI right now</h2>
+  <p class="section-intro">Seven internal reasons — not just a good pitch, but the right bet at the right time.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;">
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;">
+      <span style="font-size:28px;line-height:1;">🔄</span>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">Open Platform</div>
+      <div style="font-size:16px;font-weight:700;color:#fff;line-height:1.3;">Validates the rebrand</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;border-top:1px solid var(--border);padding-top:12px;">Seller configures agent in minutes, deploys to eBay Messaging. Live proof point — not marketing copy.</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;">
+      <span style="font-size:28px;line-height:1;">💬</span>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">Omnichannel</div>
+      <div style="font-size:16px;font-weight:700;color:#fff;line-height:1.3;">First chat-native case study</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;border-top:1px solid var(--border);padding-top:12px;">Most proof points are voice. eBay Messaging is text-first. Carter's 81% chat containment needs an external twin.</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;">
+      <span style="font-size:28px;line-height:1;">🛍️</span>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">Retail Vertical</div>
+      <div style="font-size:16px;font-weight:700;color:#fff;line-height:1.3;">New retail use case</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;border-top:1px solid var(--border);padding-top:12px;">$1.74M ARR is all cost-deflection. eBay adds revenue generation — a second, distinct retail story.</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;">
+      <span style="font-size:28px;line-height:1;">🔌</span>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">Integrations</div>
+      <div style="font-size:16px;font-weight:700;color:#fff;line-height:1.3;">Expands the integration library</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;border-top:1px solid var(--border);padding-top:12px;">eBay Messaging API signals to enterprise buyers that Open Platform integrates with e-commerce, not just telephony and CCaaS.</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;">
+      <span style="font-size:28px;line-height:1;">📈</span>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">Agentic AI</div>
+      <div style="font-size:16px;font-weight:700;color:#fff;line-height:1.3;">Gartner Level 4 in the wild</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;border-top:1px solid var(--border);padding-top:12px;">Best Offer negotiation = autonomous execution, not just answers. Real deployment beats any analyst slide.</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;">
+      <span style="font-size:28px;line-height:1;">🧩</span>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">PLG / GLOT</div>
+      <div style="font-size:16px;font-weight:700;color:#fff;line-height:1.3;">Target user for Template Engine</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;border-top:1px solid var(--border);padding-top:12px;">17M sellers, mostly non-technical. Configure via form, go live. The exact user GLOT is being built for.</div>
+    </div>
+
+  </div>
+
+
+</section>
+
+<!-- ─── THE TEAM ─── -->
+<section id="team">
+  <div class="section-label">The Team</div>
+  <h2>Built by the right people</h2>
+  <p class="section-intro">This isn't a speculative pitch — the hackathon team already covers every discipline needed to ship it.</p>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;">
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 20px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;">
+      <div style="font-size:28px;">🧭</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">PM</div>
+      <div style="font-size:14px;font-weight:700;color:#fff;line-height:1.3;">Product Manager</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.5;">Strategy, scoping, and GTM.</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 20px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;">
+      <div style="font-size:28px;">🛠️</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">FDE</div>
+      <div style="font-size:14px;font-weight:700;color:#fff;line-height:1.3;">Forward Deployment</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.5;">Knows how to get a PolyAI agent live fast. Handles integration scoping.</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 20px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;">
+      <div style="font-size:28px;">🎨</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">Agent Designer</div>
+      <div style="font-size:14px;font-weight:700;color:#fff;line-height:1.3;">Conversation Design</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.5;">Designs the negotiation flows, fallbacks, and Best Offer logic.</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 20px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;">
+      <div style="font-size:28px;">💻</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">Backend Eng</div>
+      <div style="font-size:14px;font-weight:700;color:#fff;line-height:1.3;">Backend Engineer</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.5;">Builds the eBay Messaging API integration and chat channel connectors.</div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px 20px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;">
+      <div style="font-size:28px;">⚙️</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">Vertical Eng</div>
+      <div style="font-size:14px;font-weight:700;color:#fff;line-height:1.3;">Vertical Engineer</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.5;">Adapts the platform for the retail marketplace vertical at scale.</div>
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(204,255,0,.07) 0%,rgba(204,255,0,.02) 100%);border:1px solid rgba(204,255,0,.2);border-radius:12px;padding:24px 20px;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center;">
+      <div style="font-size:28px;">🤖</div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);">GLOT Eng</div>
+      <div style="font-size:14px;font-weight:700;color:#fff;line-height:1.3;">GLOT Engineer</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.5;">Building our smart assistant — the engine that powers non-technical sellers to configure and deploy agents without code.</div>
+    </div>
+
+  </div>
+
+  <div style="background:linear-gradient(135deg,rgba(204,255,0,.07) 0%,rgba(204,255,0,.02) 100%);border:1px solid rgba(204,255,0,.2);border-radius:12px;padding:22px 28px;display:flex;align-items:center;gap:20px;">
+    <div style="font-size:32px;flex-shrink:0;">✅</div>
+    <div>
+      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Every function needed to ship is already in the room</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6;">Strategy + deployment + conversation design + chat engineering + vertical scaling. This team can take the eBay seller agent from concept to a working demo — without hiring anyone new.</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ─── MARKET SIZE ─── -->
+<section id="market">
+  <div class="section-label">Market Size</div>
+  <h2>How big is the opportunity</h2>
+  <p class="section-intro">The addressable market is defined by active sellers with enough listing volume to feel the pain — not all 17M.</p>
+
+  <div class="market-grid">
+    <div class="market-card primary">
+      <div class="market-card-label">Total active eBay sellers</div>
+      <div class="market-card-value accent">17–20M</div>
+      <div class="market-card-desc">31% US, 29% UK — directly aligned with PolyAI's commercial footprint. 65% rely on eBay as their primary small business.</div>
+    </div>
+    <div class="market-card">
+      <div class="market-card-label">Power Sellers (primary target)</div>
+      <div class="market-card-value">~700K</div>
+      <div class="market-card-desc">~4% of sellers classified as Power Sellers — high volume, high feedback standards, most acute buyer message pain. Highest WTP.</div>
+    </div>
+    <div class="market-card">
+      <div class="market-card-label">Active listings on platform</div>
+      <div class="market-card-value">2.5B</div>
+      <div class="market-card-desc">2.5 billion live listings = enormous buyer inquiry surface. Each listing generates its own stream of questions and Best Offers.</div>
+    </div>
+    <div class="market-card">
+      <div class="market-card-label">eBay GMV (2025)</div>
+      <div class="market-card-value green">$79.6B</div>
+      <div class="market-card-desc">$79.6B in transactions. Any tool that improves conversion at the messaging stage captures a slice of this. Even 0.1% GMV uplift per seller is meaningful.</div>
+    </div>
+    <div class="market-card">
+      <div class="market-card-label">Depop (eBay-owned, Feb 2026)</div>
+      <div class="market-card-value">1.9M</div>
+      <div class="market-card-desc">eBay acquired Depop for $1.2B in Feb 2026. A platform deal cascades to Depop's seller base automatically — near-zero incremental cost.</div>
+    </div>
+    <div class="market-card">
+      <div class="market-card-label">eBay Developer ecosystem</div>
+      <div class="market-card-value">340K+</div>
+      <div class="market-card-desc">Registered developers with existing API access. Loyalty Programme (Gold/Silver/Bronze tiers) is a structured partnership channel PolyAI can enter.</div>
+    </div>
+  </div>
+
+  <p class="section-label" style="margin-bottom: 16px;">Platform comparison — why eBay wins</p>
+
+  <!-- TABBED CHARTS -->
+  <div style="margin-bottom:40px;">
+    <div style="display:flex;gap:0;border-bottom:1px solid #1a2530;">
+      <button id="tab-mkt" onclick="switchTab('mkt')" style="background:none;border:none;border-bottom:2px solid #ccff00;padding:10px 22px;font-family:inherit;font-size:13px;font-weight:600;color:#ccff00;cursor:pointer;margin-bottom:-1px;transition:all .2s;">Marketplace Landscape by GMV</button>
+      <button id="tab-geo" onclick="switchTab('geo')" style="background:none;border:none;border-bottom:2px solid transparent;padding:10px 22px;font-family:inherit;font-size:13px;font-weight:500;color:#5a7080;cursor:pointer;margin-bottom:-1px;transition:all .2s;">eBay Seller Geography</button>
+    </div>
+
+    <!-- GMV Bar Chart -->
+    <div id="panel-mkt" style="display:block;padding-top:24px;">
+      <p style="font-size:13px;color:#5a7080;margin-bottom:20px;max-width:640px;line-height:1.7;">Amazon dominates at ~$800B GMV but <strong style="color:#e2eaf2;">explicitly prohibits third-party messaging tools</strong>. eBay at ~$80B is the <strong style="color:#f0a828;">largest open marketplace</strong> where a sales agent is actually buildable. Bars use square-root scale to show relative size without Amazon swamping everything.</p>
+      <div id="mkt-bars" style="display:flex;flex-direction:column;gap:10px;max-width:680px;"></div>
+      <p style="font-size:11px;color:#3a4a58;margin-top:16px;line-height:1.6;">Sources: Amazon ~$800B (Marketplace Pulse 2024); eBay $79.6B (2025); TikTok Shop ~$130B est. (2025); Etsy $11.9B; Vinted €10.8B (~$12B); Poshmark ~$2B; Depop ~$1.2B. Excludes Chinese platforms.</p>
+    </div>
+
+    <!-- Geography Pie -->
+    <div id="panel-geo" style="display:none;padding-top:24px;">
+      <div style="display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:center;">
+        <div style="position:relative;">
+          <canvas id="geoChart" width="260" height="260"></canvas>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">
+            <div style="font-size:26px;font-weight:800;color:#ccff00;line-height:1;">31%</div>
+            <div style="font-size:11px;color:#5a7080;margin-top:2px;">United States</div>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:13px;color:#5a7080;line-height:1.7;margin-bottom:18px;">US (31%) + UK (29%) = <strong style="color:#e2eaf2;">60% of all eBay sellers</strong> — almost exactly PolyAI's existing GTM footprint. The US also accounts for ~41% of eBay GMV.</p>
+          <div id="geo-legend" style="display:flex;flex-direction:column;gap:7px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <table class="platform-table">
+    <thead>
+      <tr>
+        <th>Platform</th>
+        <th>Active Sellers</th>
+        <th>Developer API</th>
+        <th>Seller tool spend culture</th>
+        <th>PolyAI relationship</th>
+        <th>UK/US fit</th>
+        <th>AI signal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="best-row">
+        <td><strong>eBay</strong> <span class="tag-winner">Best fit</span></td>
+        <td>17–20M</td>
+        <td><span class="tag-api">Mature — 340K devs</span></td>
+        <td>Strong — $15–70/mo normal</td>
+        <td>Tier 1 in Salesforce</td>
+        <td>31% US · 29% UK</td>
+        <td>Magical Listing, OpenAI deal</td>
+      </tr>
+      <tr>
+        <td>Etsy</td>
+        <td>5.6M</td>
+        <td><span class="tag-weak">Limited</span></td>
+        <td>Moderate</td>
+        <td>None</td>
+        <td>Global</td>
+        <td>Minimal</td>
+      </tr>
+      <tr>
+        <td>Amazon Marketplace</td>
+        <td>~2M (US)</td>
+        <td><span class="tag-weak">SP-API — restrictive</span></td>
+        <td>Strong but Amazon-controlled</td>
+        <td>None</td>
+        <td>US-first</td>
+        <td>Strong but closed</td>
+      </tr>
+      <tr>
+        <td>Vinted</td>
+        <td>100M users (mixed)</td>
+        <td><span class="tag-weak">No public API</span></td>
+        <td>Weak — zero-fee culture</td>
+        <td>None</td>
+        <td>EU-dominant</td>
+        <td>None visible</td>
+      </tr>
+      <tr>
+        <td>Poshmark / Depop</td>
+        <td>~2–4M</td>
+        <td><span class="tag-weak">Minimal</span></td>
+        <td>Moderate</td>
+        <td>None (Depop now eBay-owned)</td>
+        <td>US-dominant</td>
+        <td>Smart List AI (listing only)</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ─── TIME COST ─── -->
+<section id="time-cost">
+  <div class="section-label">Seller Pain Point</div>
+  <h2>How much time sellers actually spend</h2>
+  <p class="section-intro">The ROI case for a buyer agent starts with quantifying the problem. Here's what the data shows.</p>
+
+  <div class="time-grid">
+    <div class="time-card">
+      <h4>Monthly time on buyer messaging (active seller)</h4>
+      <div class="time-bar-row">
+        <div class="time-bar-label"><span>Answering buyer questions</span><strong>~8–12 hrs</strong></div>
+        <div class="time-bar-track"><div class="time-bar-fill" style="width:65%"></div></div>
+      </div>
+      <div class="time-bar-row">
+        <div class="time-bar-label"><span>Best Offer negotiation rounds</span><strong>~5–8 hrs</strong></div>
+        <div class="time-bar-track"><div class="time-bar-fill amber" style="width:45%"></div></div>
+      </div>
+      <div class="time-bar-row">
+        <div class="time-bar-label"><span>Post-purchase disputes & follow-ups</span><strong>~4–6 hrs</strong></div>
+        <div class="time-bar-track"><div class="time-bar-fill red" style="width:32%"></div></div>
+      </div>
+      <div class="time-bar-row">
+        <div class="time-bar-label"><span>Feedback management</span><strong>~2–3 hrs</strong></div>
+        <div class="time-bar-track"><div class="time-bar-fill" style="width:18%; background: var(--muted)"></div></div>
+      </div>
+      <p style="font-size:12px; color:var(--muted); margin-top:16px;">300 inquiries/month @ 6.2 min/ticket = <strong style="color:var(--text)">~31 hrs/month</strong> for a mid-volume seller (CrazyVendor case study). Equivalent to nearly a full work week.</p>
+    </div>
+
+    <div class="time-card">
+      <h4>What slow response times cost</h4>
+      <div class="time-bar-row">
+        <div class="time-bar-label"><span>Conversion uplift for &lt;4hr response</span><strong style="color:var(--green)">+25%</strong></div>
+        <div class="time-bar-track"><div class="time-bar-fill green" style="width:75%"></div></div>
+      </div>
+      <div class="time-bar-row">
+        <div class="time-bar-label"><span>Sales uplift from 1% rating improvement</span><strong style="color:var(--green)">+15–25%</strong></div>
+        <div class="time-bar-track"><div class="time-bar-fill green" style="width:70%"></div></div>
+      </div>
+      <div class="time-bar-row">
+        <div class="time-bar-label"><span>eBay inquiries that are repetitive</span><strong>80%</strong></div>
+        <div class="time-bar-track"><div class="time-bar-fill amber" style="width:80%"></div></div>
+      </div>
+      <div class="time-bar-row">
+        <div class="time-bar-label"><span>Time saved with messaging automation</span><strong style="color:var(--green)">60–63%</strong></div>
+        <div class="time-bar-track"><div class="time-bar-fill green" style="width:62%"></div></div>
+      </div>
+      <p style="font-size:12px; color:var(--muted); margin-top:16px;">Automation reduces 31hrs → 11hrs/month in documented cases. A 24/7 autonomous agent eliminates the remainder — including the 2am Best Offers sellers currently miss.</p>
+    </div>
+
+    <div class="roi-box">
+      <h4>ROI illustration — mid-volume Power Seller</h4>
+      <div class="roi-row">
+        <span class="roi-label">Seller profile</span>
+        <span class="roi-value">500 listings · ~$8K GMV/month · 300 buyer messages/month</span>
+      </div>
+      <div class="roi-row">
+        <span class="roi-label">Current time cost (at $25/hr effective rate)</span>
+        <span class="roi-value">31 hrs × $25 = <strong>$775/month</strong> in lost time</span>
+      </div>
+      <div class="roi-row">
+        <span class="roi-label">Conversion uplift from 24/7 instant response</span>
+        <span class="roi-value">+25% × $8K GMV = <strong>+$2,000/month</strong> additional revenue</span>
+      </div>
+      <div class="roi-row">
+        <span class="roi-label">Resolution of one avoided negative feedback incident</span>
+        <span class="roi-value">Saves <strong>10–15 hours</strong> + protects algorithmic ranking</span>
+      </div>
+      <div class="roi-row">
+        <span class="roi-label">Total monthly value created</span>
+        <span class="roi-highlight">$2,000–$2,775 / month in combined time savings + revenue uplift</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WTP ─── -->
+
+<!-- ─── COMPETITORS ─── -->
+<section id="competitors">
+  <div class="section-label">Competitive Landscape</div>
+  <h2>What exists today — and the gap</h2>
+  <p class="section-intro">Every current tool treats buyer messaging as a ticket workflow. Nobody treats it as a sales conversation. That is the gap.</p>
+
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>eBay Integration</th>
+        <th>Autonomous Conversation</th>
+        <th>Price Negotiation</th>
+        <th>Proactive Selling</th>
+        <th>Multi-platform</th>
+        <th>Pricing</th>
+        <th>Best For</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div class="prod-name">eBay.ai</div><div class="prod-sub">Native — eBay built</div></td>
+        <td><span class="check">✔</span> <span class="cell-green">Native</span></td>
+        <td><span class="cell-amber">Limited</span><span class="cell-note">Shipping & item detail only</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cell-red">eBay only</span></td>
+        <td><span class="cell-green">Free</span></td>
+        <td><span class="cell-grey">All sellers</span></td>
+      </tr>
+      <tr>
+        <td><div class="prod-name">3Dsellers</div><div class="prod-sub">eBay specialist</div></td>
+        <td><span class="check">✔</span> <span class="cell-green">Native</span></td>
+        <td><span class="cell-amber">Rule-based</span><span class="cell-note">Keyword triggers · 3 replies/day cap</span></td>
+        <td><span class="cell-amber">Partial</span><span class="cell-note">Fixed % threshold rules only</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cell-grey">eBay · Amazon · Shopify</span></td>
+        <td><span class="cell-grey">$15–$45 / mo</span></td>
+        <td><span class="cell-grey">High-volume eBay sellers</span></td>
+      </tr>
+      <tr>
+        <td><div class="prod-name">eDesk</div><div class="prod-sub">Multi-marketplace helpdesk</div></td>
+        <td><span class="check">✔</span> <span class="cell-green">Native</span></td>
+        <td><span class="cell-amber">AI-suggested replies</span><span class="cell-note">Human still sends every response</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✔</span> <span class="cell-grey">250+ channels</span></td>
+        <td><span class="cell-grey">$49–$69 / mo per agent</span></td>
+        <td><span class="cell-grey">Multi-channel sellers</span></td>
+      </tr>
+      <tr>
+        <td><div class="prod-name">Gorgias</div><div class="prod-sub">+ ChannelReply connector</div></td>
+        <td><span class="cell-amber">Via middleware</span><span class="cell-note">ChannelReply +$31/mo required</span></td>
+        <td><span class="cell-red">No auto-reply</span><span class="cell-note">eBay messages excluded from automation rules</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cell-amber">Shopify only</span></td>
+        <td><span class="cell-grey">Shopify-first</span></td>
+        <td><span class="cell-grey">$10+ / mo base</span></td>
+        <td><span class="cell-grey">Shopify DTC brands</span></td>
+      </tr>
+      <tr>
+        <td><div class="prod-name">Tidio</div><div class="prod-sub">SMB chatbot</div></td>
+        <td><span class="cross">✗</span> <span class="cell-red">Not supported</span></td>
+        <td><span class="check">✔</span> <span class="cell-grey">FAQ-style AI</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✔</span></td>
+        <td><span class="cell-grey">Shopify · WooCommerce</span></td>
+        <td><span class="cell-grey">$0–$50 / mo</span></td>
+        <td><span class="cell-grey">Small storefronts</span></td>
+      </tr>
+      <tr>
+        <td><div class="prod-name">Intercom / Fin</div><div class="prod-sub">Chat-native AI agent</div></td>
+        <td><span class="cross">✗</span> <span class="cell-red">No eBay API</span></td>
+        <td><span class="check">✔</span> <span class="cell-grey">Strong chat AI</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="cell-amber">Limited</span><span class="cell-note">Shopify-native · voice US/EU only</span></td>
+        <td><span class="cell-grey">Shopify · web</span></td>
+        <td><span class="cell-grey">$0.99 per resolution</span></td>
+        <td><span class="cell-grey">Existing Intercom users</span></td>
+      </tr>
+      <tr>
+        <td><div class="prod-name">Sierra</div><div class="prod-sub">Enterprise voice AI</div></td>
+        <td><span class="cross">✗</span> <span class="cell-red">No eBay API</span></td>
+        <td><span class="check">✔</span> <span class="cell-grey">Strong — voice-first</span></td>
+        <td><span class="cross">✗</span></td>
+        <td><span class="check">✔</span></td>
+        <td><span class="cell-grey">Custom enterprise</span></td>
+        <td><span class="cell-grey">$150K+ / year</span></td>
+        <td><span class="cell-grey">Nordstrom, Wayfair, Vans</span></td>
+      </tr>
+      <tr class="polyai-comp-row">
+        <td><div class="prod-name">PolyAI <span class="poly-label">US</span></div><div class="prod-sub">Open Platform</div></td>
+        <td><span class="cell-amber">To build</span><span class="cell-note">eBay Messaging API available</span></td>
+        <td><span class="check">✔</span> <span class="cell-poly">Fully autonomous</span><span class="cell-note" style="color:#1a6080">Multi-turn · no human needed</span></td>
+        <td><span class="check">✔</span> <span class="cell-poly">Natural language</span><span class="cell-note" style="color:#1a6080">Handles Best Offer back-and-forth</span></td>
+        <td><span class="check">✔</span> <span class="cell-poly">Converts browsers</span></td>
+        <td><span class="cell-grey">Expanding</span></td>
+        <td><span class="cell-poly">TBD — platform licence</span></td>
+        <td><span class="cell-grey">High-volume eBay sellers</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ─── WHY NOW ─── -->
+<section id="why-now">
+  <div class="section-label">Why Now</div>
+  <h2>Four reasons to move fast</h2>
+  <p class="section-intro">The window is open. It won't stay open forever.</p>
+
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-card-icon">🔓</div>
+      <h4>eBay is already AI-forward</h4>
+      <p>CEO Jamie Iannone: <strong>"The whole shopping experience will be AI-infused in the future."</strong> eBay partnered with OpenAI Operator (Jan 2026) for buyer-side agentic commerce. Their AI Chief says every part of the platform will be AI-native. They are ready to have this conversation — we just need to show up with the seller-side answer.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon">🏗️</div>
+      <h4>Open Platform + PLG is live</h4>
+      <p>PolyAI's self-serve motion is now real. The infrastructure for a seller to sign up, configure, and deploy an agent without professional services exists. <strong>This is the exact product–market fit</strong> for the eBay channel. We don't need to build a new product — we need one integration (eBay Messaging API) and a distribution deal.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon">⚡</div>
+      <h4>No competitor has the eBay integration</h4>
+      <p>Zero of the tools researched — eDesk, 3Dsellers, Gorgias, Tidio, Intercom, Sierra — have built a <strong>buyer-facing autonomous agent on eBay</strong>. The eBay Messaging API is public and accessible. The integration is a finite engineering task, not a fundamental capability gap. First to build it owns the market.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon">⏳</div>
+      <h4>Risks that close the window</h4>
+      <p>Two risks: <strong>eBay builds it internally</strong> (they built Magical Listing in-house — they can move fast) or <strong>Intercom/Fin expands</strong> from Shopify to eBay before we do. Both are real but neither has happened yet. Acting now is cheaper than competing later. The Salesforce record shows cold outreach only — the relationship needs to move to a demo.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DEMO ANGLES ─── -->
+<!-- ─── USE CASES ─── -->
+<section id="use-cases">
+  <div class="section-label">Use Cases</div>
+  <h2>What the agent can do for eBay sellers</h2>
+  <p class="section-intro">Six distinct jobs the PolyAI sales agent handles autonomously — all within eBay Messaging, all live 24/7.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:0;">
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;gap:18px;">
+      <div style="flex-shrink:0;width:40px;height:40px;background:rgba(204,255,0,.1);border:1px solid rgba(204,255,0,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">🤝</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">Best Offer Negotiation</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.65;">Buyer offers 60% of asking price. Agent counters, explains item value, handles the back-and-forth, and closes — without the seller ever waking up. Rule-based tools cap at 3 replies/day; PolyAI has no ceiling.</div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;gap:18px;">
+      <div style="flex-shrink:0;width:40px;height:40px;background:rgba(204,255,0,.1);border:1px solid rgba(204,255,0,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">🌙</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">24/7 Pre-Purchase Q&amp;A</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.65;">"Any scratches?", "Does this ship to Canada?", "What's the return policy?" — answered instantly from listing data and seller-configured policies, at 2am on a Sunday. Sub-4hr response = 25% higher conversion.</div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;gap:18px;">
+      <div style="flex-shrink:0;width:40px;height:40px;background:rgba(204,255,0,.1);border:1px solid rgba(204,255,0,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">📦</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">Post-Purchase Dispute Deflection</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.65;">"Item looks nothing like the photos." Agent acknowledges, requests photos, presents resolution options (partial refund or return), and only escalates to the seller when genuinely unresolvable. Protects Top Rated Seller status.</div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;gap:18px;">
+      <div style="flex-shrink:0;width:40px;height:40px;background:rgba(204,255,0,.1);border:1px solid rgba(204,255,0,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">🌍</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">International Buyer Handling</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.65;">eBay is a global platform. The agent handles shipping quotes, customs questions, and currency clarifications for international buyers — in their language — without the seller needing to research international shipping rates.</div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;gap:18px;">
+      <div style="flex-shrink:0;width:40px;height:40px;background:rgba(204,255,0,.1);border:1px solid rgba(204,255,0,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">🔄</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">Bundle &amp; Cross-Sell</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.65;">Buyer asks about one item. Agent surfaces related listings from the seller's store — "I also have the matching X if you're interested" — increasing average order value without any manual effort from the seller.</div>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;gap:18px;">
+      <div style="flex-shrink:0;width:40px;height:40px;background:rgba(204,255,0,.1);border:1px solid rgba(204,255,0,.2);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;">⚡</div>
+      <div>
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">Shipping &amp; Order Status</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.65;">"Where's my order?", "Can you ship faster?" — the agent retrieves tracking data, provides accurate ETAs, and offers expedited options where available. The most repetitive inbox category, fully automated.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ─── DEMO ─── -->
+  <div class="section-label">Demo Preparation</div>
+  <h2>Three flows to show eBay</h2>
+  <p class="section-intro">Each scenario maps directly to a documented seller pain point. All three are achievable with existing PolyAI capabilities + eBay Messaging API integration.</p>
+
+  <div class="demo-grid">
+    <div class="demo-card">
+      <div class="demo-num">01</div>
+      <h4>Best Offer Negotiator</h4>
+      <p><strong>Persona:</strong> Power seller, 500+ listings, receives 30+ Best Offers per week.</p>
+      <p style="margin-top:8px"><strong>Flow:</strong> Buyer submits 60% of asking price. Agent responds conversationally — explains item condition and uniqueness, counters at 85%, handles the back-and-forth, closes the deal. All without seller involvement.</p>
+      <p style="margin-top:8px; color:var(--muted)">Why it lands: This is pure volume pain. Some sellers disable Best Offer entirely because of negotiation fatigue. This demo solves it.</p>
+    </div>
+    <div class="demo-card">
+      <div class="demo-num">02</div>
+      <h4>24/7 Pre-Purchase Q&A</h4>
+      <p><strong>Persona:</strong> Refurbished electronics seller, 200 listings, lots of international buyers.</p>
+      <p style="margin-top:8px"><strong>Flow:</strong> Buyer messages at 2am: "Any scratches? Will you ship to Canada? What's the return policy?" Agent answers all three instantly using listing data and seller-configured policies. Buyer buys. Seller was asleep.</p>
+      <p style="margin-top:8px; color:var(--muted)">Why it lands: Directly ties to the 25% conversion uplift from &lt;4hr response. Every unanswered night-time message is a lost sale.</p>
+    </div>
+    <div class="demo-card">
+      <div class="demo-num">03</div>
+      <h4>Post-Purchase Dispute Deflection</h4>
+      <p><strong>Persona:</strong> Clothing seller with high return volume, protecting Top Rated Seller status.</p>
+      <p style="margin-top:8px"><strong>Flow:</strong> Buyer: "Item looks nothing like the photos." Agent acknowledges empathetically, asks for photos, checks return policy, offers resolution options (partial refund vs return), escalates to seller only when genuinely needed.</p>
+      <p style="margin-top:8px; color:var(--muted)">Why it lands: Negative feedback resolution costs 10–15 hours and damages algorithmic ranking. One avoided negative is worth the monthly subscription.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── OPEN QUESTIONS ─── -->
+<section id="open-questions">
+  <div class="section-label">Open Questions</div>
+  <h2>What to validate with eBay</h2>
+  <p class="section-intro">Five questions to answer in the first conversation that determine deal structure and technical approach.</p>
+
+  <ul class="oq-list">
+    <li>Does eBay's Messaging API support third-party agents responding autonomously on behalf of sellers, or is it read-only? This is the single most important technical question — determines build feasibility.</li>
+    <li>Who owns "seller tools" product at eBay? The OpenAI Operator partnership was led by the buyer/commerce team — is there a separate seller experience PM who would champion this?</li>
+    <li>Would eBay distribute PolyAI via their Developer Programme / App Marketplace, or is this a direct seller-acquisition motion? The answer changes pricing model, GTM, and support surface entirely.</li>
+    <li>With eBay now owning Depop (Feb 2026), could a single platform deal cascade across both marketplaces? Depop's 1.9M sellers + eBay's 17M = a materially larger contract.</li>
+    <li>What is eBay's internal AI roadmap for seller messaging beyond eBay.ai's current FAQ scope? We need to know if they plan to build this themselves before we go deep on the pitch.</li>
+  </ul>
+</section>
+
+<section id="wtp">
+  <div class="section-label">Willingness to Pay</div>
+  <h2>What sellers will pay — and why</h2>
+  <p class="section-intro">Sellers already pay $15–$70/month for tools that still require human input. An autonomous agent that removes human effort entirely justifies a significant premium.</p>
+
+  <div class="wtp-grid">
+    <div class="wtp-card">
+      <div class="wtp-tier">Market floor</div>
+      <div class="wtp-price">$15–$30 <span>/ mo</span></div>
+      <div class="wtp-desc">What sellers pay today for rule-based tools (3Dsellers, ChannelReply). Autoresponders, keyword triggers, Best Offer thresholds. Human still sends every reply.</div>
+      <div class="wtp-anchor">Anchored by: 3Dsellers $14.90–$44.90</div>
+    </div>
+    <div class="wtp-card">
+      <div class="wtp-tier">Mid-tier established</div>
+      <div class="wtp-price">$49–$69 <span>/ mo</span></div>
+      <div class="wtp-desc">What sellers pay for AI-assisted helpdesks (eDesk). Smart inbox, sentiment analysis, reply suggestions. Still human-in-the-loop for every message.</div>
+      <div class="wtp-anchor">Anchored by: eDesk $49–$69 per agent</div>
+    </div>
+    <div class="wtp-card highlight">
+      <div class="wtp-tier">PolyAI target range</div>
+      <div class="wtp-price">$79–$149 <span>/ mo</span></div>
+      <div class="wtp-desc">Fully autonomous buyer agent. No human needed. Handles questions, negotiates Best Offer, converts 24/7. ROI = $2K+/month for mid-volume sellers — clear 10–20x return on subscription cost.</div>
+      <div class="wtp-anchor">2–3x eDesk price · justified by full automation</div>
+    </div>
+  </div>
+
+  <p style="font-size:13px; color:var(--muted); margin-bottom:24px;">Benchmarks show sellers are comfortable paying for tools where ROI at $5,000+ monthly sales is clear. At $100/month and $2,000/month in value created, the ROI is 20:1 — well above the threshold. The question is not willingness to pay; it's <strong style="color:var(--text)">whether the product delivers</strong>.</p>
+
+  <div class="arr-box">
+    <div class="arr-item">
+      <div class="arr-item-label">Target segment</div>
+      <div class="arr-item-value">~700K</div>
+      <div class="arr-item-sub">Power Sellers globally</div>
+    </div>
+    <div class="arr-item">
+      <div class="arr-item-label">At 1% penetration</div>
+      <div class="arr-item-value">7,000</div>
+      <div class="arr-item-sub">paying sellers</div>
+    </div>
+    <div class="arr-item">
+      <div class="arr-item-label">At $99/mo ARPU</div>
+      <div class="arr-item-value green">$8.3M</div>
+      <div class="arr-item-sub">ARR at 1% penetration</div>
+    </div>
+    <div class="arr-item">
+      <div class="arr-item-label">Platform deal model</div>
+      <div class="arr-item-value green">$5–20M+</div>
+      <div class="arr-item-sub">single eBay enterprise contract</div>
+    </div>
+  </div>
+</section>
+
+<section id="biz-model">
+  <div class="section-label">Business Model</div>
+  <h2>The deal structure that makes this work</h2>
+
+  <!-- Full-width platform deal card -->
+  <div style="background:linear-gradient(135deg,rgba(204,255,0,.08) 0%,rgba(204,255,0,.02) 100%);border:1px solid rgba(204,255,0,.25);border-radius:12px;padding:28px 32px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;">
+    <div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent);margin-bottom:8px;">🚀 Business Model</div>
+      <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;letter-spacing:-.3px;">Platform deal = enterprise ARR without enterprise cost</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.65;">SMB sellers don't pay enterprise prices — but <strong style="color:var(--text)">eBay does.</strong> One contract, one CSM, one sales cycle. Sellers self-serve via eBay's distribution. PolyAI gets enterprise ARR with PLG scale.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;min-width:180px;">
+      <div style="background:rgba(204,255,0,.1);border:1px solid rgba(204,255,0,.2);border-radius:8px;padding:12px 16px;text-align:center;">
+        <div style="font-size:20px;font-weight:800;color:var(--accent);">$5–20M+</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">single enterprise contract</div>
+      </div>
+      <div style="background:rgba(204,255,0,.06);border:1px solid rgba(204,255,0,.15);border-radius:8px;padding:12px 16px;text-align:center;">
+        <div style="font-size:20px;font-weight:800;color:var(--accent);">17M</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">sellers via eBay distribution</div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+</div><!-- /page -->
+
+<footer>
+  <span>PolyAI Open Platform · eBay Demo Justification · June 2026</span>
+  <span>Confidential — internal use only</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+function switchTab(t) {
+  ['mkt','geo'].forEach(id => {
+    document.getElementById('panel-'+id).style.display = id===t ? 'block' : 'none';
+    const btn = document.getElementById('tab-'+id);
+    btn.style.color = id===t ? '#ccff00' : '#5a7080';
+    btn.style.borderBottom = id===t ? '2px solid #ccff00' : '2px solid transparent';
+    btn.style.fontWeight = id===t ? '600' : '500';
+  });
+}
+
+/* ── Bar chart: Marketplace GMV (sqrt scale) ── */
+const mktData = [
+  { label:'Amazon',      gmv:800,  color:'#ccff00', isClosed:true,  isTarget:false },
+  { label:'TikTok Shop', gmv:130,  color:'#5a7080', isClosed:false, isTarget:false },
+  { label:'eBay',        gmv:80,   color:'#f0a828', isClosed:false, isTarget:true  },
+  { label:'Etsy',        gmv:12,   color:'#3a6050', isClosed:false, isTarget:false },
+  { label:'Vinted',      gmv:12,   color:'#2a4840', isClosed:false, isTarget:false },
+  { label:'Poshmark',    gmv:2,    color:'#1e3530', isClosed:false, isTarget:false },
+  { label:'Depop',       gmv:1.2,  color:'#162828', isClosed:false, isTarget:false },
+];
+const maxSqrt = Math.sqrt(800);
+const barsEl = document.getElementById('mkt-bars');
+mktData.forEach(d => {
+  const pct = (Math.sqrt(d.gmv) / maxSqrt) * 100;
+  const row = document.createElement('div');
+  row.style.cssText = 'display:grid;grid-template-columns:110px 1fr auto;gap:12px;align-items:center;';
+  const lbl = document.createElement('div');
+  lbl.style.cssText = 'font-size:13px;font-weight:'+(d.isTarget?'700':'400')+';color:'+(d.isTarget?'#fff':'#5a7080')+';text-align:right;white-space:nowrap;';
+  lbl.textContent = d.label;
+  const track = document.createElement('div');
+  track.style.cssText = 'height:26px;background:#111920;border-radius:4px;overflow:hidden;';
+  const fill = document.createElement('div');
+  fill.style.cssText = 'height:100%;width:0%;background:'+d.color+';border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1);display:flex;align-items:center;padding-left:10px;';
+  if (d.isClosed) fill.innerHTML = '<span style="font-size:9px;font-weight:700;color:#080c10;letter-spacing:.5px;">API CLOSED</span>';
+  track.appendChild(fill);
+  const meta = document.createElement('div');
+  meta.style.cssText = 'display:flex;align-items:center;gap:6px;min-width:130px;';
+  meta.innerHTML = '<span style="font-size:12px;font-weight:700;color:'+(d.isTarget?'#f0a828':'#5a7080')+';white-space:nowrap;">$'+d.gmv+'B</span>'+
+    (d.isTarget?'<span style="background:rgba(240,168,40,.12);border:1px solid rgba(240,168,40,.3);border-radius:3px;padding:1px 6px;font-size:9px;font-weight:700;color:#f0a828;letter-spacing:.4px;">OUR TARGET</span>':'');
+  row.appendChild(lbl); row.appendChild(track); row.appendChild(meta);
+  barsEl.appendChild(row);
+  requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = pct+'%'; }));
+});
+
+/* ── Doughnut: eBay seller geography ── */
+const geoData = [
+  { label:'United States', pct:31, color:'#ccff00', priority:true  },
+  { label:'United Kingdom',pct:29, color:'#e5ff80', priority:true  },
+  { label:'Germany',       pct:15, color:'#f0a828', priority:false },
+  { label:'Australia',     pct: 7, color:'#3a6050', priority:false },
+  { label:'China',         pct: 6, color:'#2a4840', priority:false },
+  { label:'Italy',         pct: 5, color:'#1e3530', priority:false },
+  { label:'Rest',          pct: 7, color:'#142828', priority:false },
+];
+new Chart(document.getElementById('geoChart').getContext('2d'), {
+  type:'doughnut',
+  data:{ labels:geoData.map(d=>d.label), datasets:[{ data:geoData.map(d=>d.pct), backgroundColor:geoData.map(d=>d.color), borderColor:'#080c10', borderWidth:3, hoverOffset:8, offset:geoData.map(d=>d.priority?8:0) }] },
+  options:{ cutout:'60%', plugins:{ legend:{display:false}, tooltip:{ backgroundColor:'#0d1318', borderColor:'#1a2530', borderWidth:1, titleColor:'#e2eaf2', bodyColor:'#5a7080', callbacks:{ label:c=>` ${c.parsed}% of active sellers` } } } }
+});
+const geoLeg = document.getElementById('geo-legend');
+geoData.forEach(d => {
+  const r = document.createElement('div');
+  r.style.cssText = 'display:flex;align-items:center;gap:10px;';
+  r.innerHTML = `<span style="width:9px;height:9px;border-radius:50%;background:${d.color};flex-shrink:0;"></span><span style="font-size:13px;color:${d.priority?'#e2eaf2':'#5a7080'};font-weight:${d.priority?'600':'400'};">${d.label}</span><span style="font-size:13px;font-weight:700;color:${d.priority?d.color:'#3a4a58'};margin-left:auto;">${d.pct}%</span>${d.label==='United States'?'<span style="background:rgba(204,255,0,.12);border:1px solid rgba(204,255,0,.25);border-radius:3px;padding:1px 6px;font-size:9px;font-weight:700;color:#ccff00;letter-spacing:.4px;">PRIORITY</span>':''}`;
+  geoLeg.appendChild(r);
+});
+</script>
+</body>
+</html>
