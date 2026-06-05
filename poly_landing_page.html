@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- DOWNLOAD & OPEN: Save this file as index.html, then double-click it to open in your browser -->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PolyAI — AI agents for effortless dining experiences</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* PolyAI exact brand palette — confirmed from screenshots */
+  --bg:         #0e0f0c;   /* very dark olive-black */
+  --bg-2:       #16180f;   /* dark section bg */
+  --bg-3:       #1c1e14;   /* card surface */
+  --bg-4:       #22241a;   /* card hover */
+  --border:     #2a2c20;
+  --border-2:   #363829;
+
+  /* Primary accent — PolyAI chartreuse/lime green */
+  --lime:         #c8f04d;
+  --lime-hover:   #b8e03d;
+  --lime-dark:    #8aaa20;
+  --lime-soft:    rgba(200,240,77,0.10);
+  --lime-border:  rgba(200,240,77,0.25);
+  --lime-text:    #0e0f0c;  /* dark text on lime bg */
+
+  /* Text */
+  --text-primary:   #edebd8;   /* warm off-white */
+  --text-secondary: #8a896a;   /* muted olive */
+  --text-muted:     #545544;
+
+  /* Accents */
+  --sage:      #7a9a5a;
+  --sage-soft: rgba(122,154,90,0.12);
+  --gold:      #c8a96e;
+  --gold-soft: rgba(200,169,110,0.12);
+
+  --radius:    12px;
+  --radius-sm: 8px;
+  --radius-lg: 18px;
+  --shadow:    0 4px 24px rgba(0,0,0,0.5);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.7);
+}
+
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Helvetica Neue',sans-serif;background:var(--bg);color:var(--text-primary);line-height:1.6;font-size:16px}
+
+/* ─── NAV ─── */
+nav{position:sticky;top:0;z-index:100;background:rgba(14,15,12,0.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 48px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-logo{font-size:20px;font-weight:700;color:var(--text-primary);letter-spacing:-0.3px;text-decoration:none;display:flex;align-items:center;gap:2px}
+.nav-logo-dot{width:8px;height:8px;background:var(--lime);border-radius:50%;margin-left:3px}
+.nav-links{display:flex;gap:32px;list-style:none}
+.nav-links a{color:var(--text-secondary);text-decoration:none;font-size:14px;font-weight:450;transition:color .2s}
+.nav-links a:hover{color:var(--text-primary)}
+.nav-cta{background:var(--lime);color:var(--lime-text);padding:9px 20px;border-radius:100px;font-size:14px;font-weight:700;text-decoration:none;transition:background .2s,transform .15s;white-space:nowrap}
+.nav-cta:hover{background:var(--lime-hover);transform:translateY(-1px)}
+
+/* ─── BANNER ─── */
+.banner{background:var(--bg-3);border-bottom:1px solid var(--border);color:var(--text-secondary);text-align:center;padding:9px 20px;font-size:13px}
+.banner strong{color:var(--lime);font-weight:600}
+
+/* ─── HERO ─── */
+.hero{background:var(--bg);padding:100px 48px 84px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:800px;height:500px;background:radial-gradient(ellipse,rgba(200,240,77,0.07) 0%,transparent 65%);pointer-events:none}
+.hero-tag{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border-2);color:var(--text-muted);padding:5px 14px;border-radius:100px;font-size:12px;font-weight:500;letter-spacing:0.4px;margin-bottom:28px}
+.hero-tag .dot{width:6px;height:6px;background:var(--lime);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.hero h1{font-size:clamp(38px,5.5vw,70px);font-weight:700;line-height:1.05;letter-spacing:-2.5px;max-width:800px;margin:0 auto 22px;color:var(--text-primary)}
+.hero h1 em{font-style:normal;color:var(--lime)}
+.hero-sub{font-size:18px;color:var(--text-secondary);max-width:520px;margin:0 auto 44px;line-height:1.65}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:64px}
+.btn-lime{background:var(--lime);color:var(--lime-text);padding:14px 30px;border-radius:100px;font-size:15px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:background .2s,transform .15s,box-shadow .2s;border:none;cursor:pointer}
+.btn-lime:hover{background:var(--lime-hover);transform:translateY(-2px);box-shadow:0 8px 32px rgba(200,240,77,0.2)}
+.btn-ghost{color:var(--text-secondary);font-size:15px;text-decoration:none;display:inline-flex;align-items:center;gap:7px;padding:14px 4px;border-bottom:1px solid var(--border-2);transition:color .2s}
+.btn-ghost:hover{color:var(--text-primary)}
+.hero-stats{display:flex;align-items:stretch;justify-content:center;padding-top:48px;border-top:1px solid var(--border)}
+.hstat{text-align:center;padding:0 40px;border-right:1px solid var(--border)}
+.hstat:last-child{border-right:none}
+.hstat .n{font-size:34px;font-weight:700;color:var(--text-primary);letter-spacing:-1.5px}
+.hstat .n span{color:var(--lime)}
+.hstat .l{font-size:12px;color:var(--text-muted);margin-top:4px;max-width:110px;margin-left:auto;margin-right:auto;line-height:1.4}
+
+/* ─── HELPERS ─── */
+.sec-tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.4px;color:var(--sage);margin-bottom:14px}
+.sec-tag.lime{color:var(--lime)}
+.sec-h{font-size:clamp(26px,3.5vw,42px);font-weight:700;letter-spacing:-1px;color:var(--text-primary);line-height:1.1}
+.sec-p{font-size:16px;color:var(--text-secondary);margin-top:14px;max-width:520px;line-height:1.65}
+.centered{text-align:center}.centered .sec-p{margin-left:auto;margin-right:auto}
+
+/* ─── INTEGRATIONS ─── */
+.int-bar{padding:32px 48px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.int-bar-label{text-align:center;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:var(--text-muted);margin-bottom:18px}
+.int-logos{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.int-pill{font-size:13px;font-weight:500;color:var(--text-muted);padding:6px 16px;border:1px solid var(--border);border-radius:100px;transition:all .2s}
+.int-pill:hover{color:var(--text-primary);border-color:var(--border-2)}
+
+/* ─── AUDIO CHALLENGE ─── */
+.challenge{padding:80px 48px;background:var(--bg-2)}
+.challenge-cards{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;max-width:760px;margin:44px auto 28px}
+.ccard{flex:1;min-width:220px;max-width:255px;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;cursor:pointer;transition:border-color .2s,background .2s}
+.ccard:hover{border-color:var(--border-2)}
+.ccard.playing{border-color:var(--lime);background:var(--lime-soft)}
+.ccard.revealed-poly{border-color:var(--lime)}
+.ccard-tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:12px}
+.ccard h3{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:7px}
+.ccard p{font-size:13px;color:var(--text-secondary);margin-bottom:18px;line-height:1.5}
+.wave{display:flex;align-items:center;justify-content:center;gap:3px;height:30px;margin:12px 0}
+.wave span{display:block;width:3px;background:var(--border-2);border-radius:2px;transition:background .3s}
+.ccard.playing .wave span{background:var(--lime)}
+.w1{height:8px;animation:wb 1.2s ease-in-out infinite 0s}
+.w2{height:20px;animation:wb 1.2s ease-in-out infinite .1s}
+.w3{height:28px;animation:wb 1.2s ease-in-out infinite .2s}
+.w4{height:16px;animation:wb 1.2s ease-in-out infinite .3s}
+.w5{height:24px;animation:wb 1.2s ease-in-out infinite .4s}
+.w6{height:12px;animation:wb 1.2s ease-in-out infinite .5s}
+.w7{height:20px;animation:wb 1.2s ease-in-out infinite .35s}
+.w8{height:8px;animation:wb 1.2s ease-in-out infinite .15s}
+@keyframes wb{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+.play-btn{width:100%;background:var(--bg-4);color:var(--text-secondary);border:1px solid var(--border);padding:10px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.play-btn:hover{border-color:var(--border-2);color:var(--text-primary)}
+.ccard.playing .play-btn{background:var(--lime);color:var(--lime-text);border-color:var(--lime)}
+.guess-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+.guess-btn{background:var(--bg-3);color:var(--text-secondary);border:1px solid var(--border);padding:11px 26px;border-radius:100px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.guess-btn:hover{border-color:var(--lime);color:var(--lime)}
+.challenge-result{margin:24px auto 0;max-width:560px;padding:24px 28px;border-radius:var(--radius);display:none}
+.challenge-result.show{display:block}
+.challenge-result.correct{background:var(--lime-soft);border:1px solid var(--lime-border)}
+.challenge-result.wrong{background:var(--bg-3);border:1px solid var(--border-2)}
+.challenge-result h4{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:8px}
+.challenge-result p{font-size:14px;color:var(--text-secondary);line-height:1.6}
+.result-pill{display:inline-block;margin-top:14px;background:var(--lime);color:var(--lime-text);padding:5px 16px;border-radius:100px;font-size:12px;font-weight:700}
+.guess-hint{text-align:center;font-size:13px;color:var(--text-muted);margin-top:8px}
+
+/* ─── PROBLEM ─── */
+.problem{padding:80px 48px;background:var(--bg)}
+.problem-inner{max-width:1080px;margin:0 auto}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:48px;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border)}
+.pcard{background:var(--bg-2);padding:32px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.pcard:nth-child(2n){border-right:none}
+.pcard:nth-child(3),.pcard:nth-child(4){border-bottom:none}
+.pcard-icon{font-size:20px;margin-bottom:14px}
+.pcard h3{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:8px}
+.pcard p{font-size:14px;color:var(--text-secondary);line-height:1.6}
+.pstat{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:28px 32px;display:flex;align-items:center;gap:24px;margin-top:14px}
+.pstat-num{font-size:48px;font-weight:700;color:var(--lime);letter-spacing:-2px;flex-shrink:0;line-height:1}
+.pstat p{font-size:14px;color:var(--text-secondary);line-height:1.6}
+.pstat p em{font-style:italic;color:var(--text-primary)}
+
+/* ─── HOW ─── */
+.how{padding:80px 48px;background:var(--bg-2)}
+.how-inner{max-width:1080px;margin:0 auto}
+.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:48px;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border)}
+.hstep{background:var(--bg-3);padding:36px 28px;border-right:1px solid var(--border)}
+.hstep:last-child{border-right:none}
+.hstep-n{width:36px;height:36px;background:var(--lime-soft);border:1px solid var(--lime-border);color:var(--lime);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;margin-bottom:18px}
+.hstep h3{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:8px}
+.hstep p{font-size:14px;color:var(--text-secondary);line-height:1.6}
+.hstep-badge{display:inline-block;margin-top:14px;background:var(--lime-soft);border:1px solid var(--lime-border);color:var(--lime);font-size:11px;font-weight:600;padding:3px 11px;border-radius:100px}
+
+/* ─── FEATURES ─── */
+.features{padding:80px 48px;background:var(--bg)}
+.features-inner{max-width:1080px;margin:0 auto}
+.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:48px;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--border)}
+.fcard{background:var(--bg-2);padding:28px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transition:background .2s}
+.fcard:hover{background:var(--bg-3)}
+.fcard:nth-child(3n){border-right:none}
+.fcard:nth-child(4),.fcard:nth-child(5),.fcard:nth-child(6){border-bottom:none}
+.fcard-icon{font-size:20px;margin-bottom:16px;display:block}
+.fcard h3{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:7px}
+.fcard p{font-size:13px;color:var(--text-secondary);line-height:1.6}
+
+/* ─── AUDIENCE TABS ─── */
+.audience{padding:80px 48px;background:var(--bg-2)}
+.audience-inner{max-width:960px;margin:0 auto;text-align:center}
+.tabs{display:flex;justify-content:center;gap:2px;margin:36px 0;background:var(--bg-3);border:1px solid var(--border);border-radius:100px;padding:4px;width:fit-content;margin-left:auto;margin-right:auto}
+.tab{background:none;color:var(--text-muted);border:none;padding:8px 20px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.tab.active{background:var(--lime);color:var(--lime-text)}
+.tab:not(.active):hover{color:var(--text-primary)}
+.tcontent{display:none;text-align:left;background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px}
+.tcontent.active{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.tcontent h3{font-size:22px;font-weight:700;color:var(--text-primary);margin-bottom:12px;letter-spacing:-0.5px}
+.tcontent p{font-size:15px;color:var(--text-secondary);margin-bottom:20px;line-height:1.65}
+.tlist{list-style:none;display:flex;flex-direction:column;gap:10px}
+.tlist li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text-secondary)}
+.tlist li::before{content:'✓';color:var(--lime);font-weight:700;flex-shrink:0;margin-top:1px}
+.tbox{background:var(--bg-4);border:1px solid var(--border);border-radius:var(--radius);padding:28px;text-align:center}
+.tbox .big{font-size:52px;font-weight:700;color:var(--lime);letter-spacing:-2px;display:block;line-height:1}
+.tbox .desc{font-size:13px;color:var(--text-muted);margin-top:10px;line-height:1.5}
+.ghost-only{display:inline-block;background:var(--gold-soft);border:1px solid rgba(200,169,110,0.3);color:var(--gold);font-size:11px;font-weight:600;padding:3px 11px;border-radius:100px;margin-bottom:12px}
+
+/* ─── ROI ─── */
+.roi{padding:80px 48px;background:var(--bg)}
+.roi-inner{max-width:820px;margin:0 auto}
+.roi-card{background:var(--bg-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:44px}
+.roi-inputs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin:32px 0}
+.roi-field label{display:block;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px}
+.roi-field input[type=range]{width:100%;accent-color:var(--lime);margin-bottom:6px;cursor:pointer}
+.roi-field .val{font-size:26px;font-weight:700;color:var(--text-primary);letter-spacing:-1px}
+.roi-out{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:26px;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center}
+.roi-out .rec{font-size:44px;font-weight:700;color:var(--lime);letter-spacing:-2px}
+.roi-out .rec-label{font-size:12px;color:var(--text-muted);margin-top:4px}
+.roi-out .note{font-size:14px;color:var(--text-secondary);line-height:1.6}
+.roi-out .note strong{color:var(--text-primary)}
+.comp-tbl{margin-top:16px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.comp-tbl table{width:100%;border-collapse:collapse;font-size:13px}
+.comp-tbl th{background:var(--bg-3);color:var(--text-muted);padding:10px 14px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;text-align:center;border-bottom:1px solid var(--border)}
+.comp-tbl th:first-child{text-align:left}
+.comp-tbl td{padding:10px 14px;border-top:1px solid var(--border);color:var(--text-secondary);text-align:center}
+.comp-tbl td:first-child{text-align:left;font-weight:600;color:var(--text-primary)}
+.comp-tbl tr.poly-row td{background:var(--lime-soft)}
+.comp-tbl tr.poly-row td:first-child{color:var(--lime)}
+.yes{color:var(--lime);font-weight:700}
+.no{color:var(--text-muted)}
+.partial{color:var(--gold);font-size:12px;font-weight:600}
+
+/* ─── TESTIMONIALS ─── */
+.testimonials{padding:80px 48px;background:var(--bg-2)}
+.testimonials-inner{max-width:1080px;margin:0 auto}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:48px}
+.tcard{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;display:flex;flex-direction:column}
+.tcard.hero-card{background:var(--bg-4);border-color:var(--border-2)}
+.tcard-metric{display:inline-block;background:var(--lime-soft);border:1px solid var(--lime-border);color:var(--lime);font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;margin-bottom:14px}
+.tcard blockquote{font-size:15px;line-height:1.7;flex:1;margin-bottom:20px;color:var(--text-secondary);font-style:italic}
+.tcard-author{display:flex;align-items:center;gap:11px}
+.tcard-av{width:38px;height:38px;border-radius:50%;background:var(--bg);border:1px solid var(--border-2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--text-muted);flex-shrink:0}
+.tcard-name{font-size:13px;font-weight:600;color:var(--text-primary)}
+.tcard-role{font-size:12px;color:var(--text-muted)}
+
+/* ─── COMPARE ─── */
+.compare{padding:80px 48px;background:var(--bg)}
+.compare-inner{max-width:960px;margin:0 auto}
+.ctbl{margin-top:48px;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;overflow-x:auto}
+.ctbl table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
+.ctbl thead th{padding:12px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);background:var(--bg-2);text-align:center;border-bottom:1px solid var(--border)}
+.ctbl thead th:first-child{text-align:left;min-width:180px}
+.ctbl thead th.poly-h{background:var(--lime-soft);color:var(--lime);border-bottom-color:var(--lime-border)}
+.ctbl tbody td{padding:12px 16px;border-top:1px solid var(--border);color:var(--text-secondary);text-align:center}
+.ctbl tbody td:first-child{text-align:left;font-weight:600;color:var(--text-primary)}
+.ctbl tbody td.poly-h{background:var(--lime-soft)}
+.ctbl-note{font-size:12px;color:var(--text-muted);text-align:center;margin-top:12px}
+
+/* ─── PRICING ─── */
+.pricing{padding:80px 48px;background:var(--bg-2)}
+.pricing-inner{max-width:980px;margin:0 auto;text-align:center}
+.offer-pill{display:inline-block;background:var(--gold-soft);border:1px solid rgba(200,169,110,0.3);color:var(--gold);padding:7px 18px;border-radius:100px;font-size:12px;font-weight:600;margin-bottom:44px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pcard-w{background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius-lg);padding:30px;text-align:left;display:flex;flex-direction:column;transition:border-color .2s}
+.pcard-w.pop{border-color:var(--lime)}
+.pcard-badge{display:inline-block;background:var(--lime);color:var(--lime-text);font-size:11px;font-weight:700;padding:4px 12px;border-radius:100px;margin-bottom:16px}
+.pcard-w h3{font-size:17px;font-weight:700;color:var(--text-primary);margin-bottom:6px}
+.pcard-w .price{font-size:40px;font-weight:700;color:var(--text-primary);letter-spacing:-2px;margin:14px 0 3px}
+.pcard-w .price span{font-size:15px;font-weight:400;color:var(--text-muted)}
+.pcard-w .was{font-size:13px;color:var(--text-muted);text-decoration:line-through;margin-bottom:16px}
+.pcard-feats{list-style:none;display:flex;flex-direction:column;gap:8px;margin:18px 0;flex:1}
+.pcard-feats li{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--text-secondary)}
+.pcard-feats li::before{content:'✓';color:var(--lime);font-weight:700;flex-shrink:0}
+.pcard-btn{display:block;padding:12px;border-radius:100px;font-size:14px;font-weight:700;text-align:center;text-decoration:none;transition:all .2s;background:var(--bg-4);color:var(--text-primary);border:1px solid var(--border)}
+.pcard-btn:hover{border-color:var(--border-2);background:var(--bg)}
+.pcard-w.pop .pcard-btn{background:var(--lime);color:var(--lime-text);border-color:var(--lime)}
+.pcard-w.pop .pcard-btn:hover{background:var(--lime-hover)}
+.ptable{margin-top:40px;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.ptable table{width:100%;border-collapse:collapse;font-size:13px}
+.ptable th{background:var(--bg-3);color:var(--text-muted);padding:11px 18px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+.ptable th:last-child{color:var(--lime)}
+.ptable td{padding:11px 18px;border-top:1px solid var(--border);color:var(--text-secondary)}
+.ptable td:last-child{font-weight:600;color:var(--text-primary)}
+.ptable tr:last-child td{border-top:2px solid var(--border-2)}
+.chk{color:var(--lime);font-weight:700}
+.crx{color:var(--text-muted)}
+
+/* ─── FAQ ─── */
+.faq{padding:80px 48px;background:var(--bg)}
+.faq-inner{max-width:720px;margin:0 auto}
+.fitem{border-bottom:1px solid var(--border)}
+.fq{width:100%;background:none;border:none;text-align:left;padding:20px 0;font-size:16px;font-weight:500;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--text-secondary);transition:color .2s}
+.fq:hover,.fitem.open .fq{color:var(--text-primary)}
+.fchev{width:22px;height:22px;border:1px solid var(--border-2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--text-muted);transition:transform .25s,border-color .2s,color .2s;flex-shrink:0}
+.fitem.open .fchev{transform:rotate(45deg);border-color:var(--lime);color:var(--lime)}
+.fa{display:none;padding-bottom:18px;font-size:14px;color:var(--text-secondary);line-height:1.7}
+.fitem.open .fa{display:block}
+
+/* ─── FINAL CTA ─── */
+.fcta{padding:100px 48px;background:var(--bg-2);text-align:center;position:relative;overflow:hidden}
+.fcta::before{content:'';position:absolute;bottom:-80px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(200,240,77,0.06) 0%,transparent 65%);pointer-events:none}
+.fcta .deadline{display:inline-block;background:var(--gold-soft);border:1px solid rgba(200,169,110,0.3);color:var(--gold);padding:7px 16px;border-radius:100px;font-size:12px;font-weight:600;margin-bottom:28px}
+.fcta h2{font-size:clamp(30px,5vw,56px);font-weight:700;letter-spacing:-1.5px;color:var(--text-primary);margin-bottom:16px;position:relative}
+.fcta p{font-size:17px;color:var(--text-secondary);margin-bottom:36px;position:relative}
+.micro{font-size:12px;color:var(--text-muted);margin-top:10px}
+
+/* ─── FOOTER ─── */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:48px 48px 28px}
+.ftop{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.fbrand-logo{font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:10px;text-decoration:none;display:flex;align-items:center;gap:4px}
+.fbrand-logo .ldot{width:7px;height:7px;background:var(--lime);border-radius:50()}
+.fbrand p{font-size:13px;color:var(--text-muted);max-width:200px;line-height:1.6;margin-top:10px}
+.fcol h4{color:var(--text-muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+.fcol ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.fcol a{color:var(--text-muted);text-decoration:none;font-size:13px;transition:color .2s}
+.fcol a:hover{color:var(--text-primary)}
+.fbot{border-top:1px solid var(--border);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--text-muted)}
+.fbot a{color:var(--text-muted);text-decoration:none}
+.fbot a:hover{color:var(--text-secondary)}
+
+@media(max-width:768px){
+  nav,footer{padding-left:20px;padding-right:20px}
+  section,.challenge,.audience,.roi,.compare,.pricing,.faq,.fcta{padding-left:20px;padding-right:20px}
+  .pgrid,.how-steps,.fgrid,.tgrid{grid-template-columns:1fr}
+  .tcontent.active,.roi-inputs,.roi-out{grid-template-columns:1fr}
+  .hero-stats{flex-wrap:wrap}.hstat{border-right:none;border-bottom:1px solid var(--border);padding:16px 20px;width:50%}.hstat:nth-child(4){border-bottom:none}
+  .ftop{grid-template-columns:1fr 1fr}
+  .nav-links{display:none}
+  .challenge-cards,.pgrid{flex-direction:column}
+  .tabs{flex-wrap:wrap;border-radius:var(--radius)}
+}
+</style>
+</head>
+<body>
+
+<div class="banner"><strong>OpenTable partners:</strong> 3 months free + rate locked for life. Offer ends May 11.</div>
+
+<nav>
+  <a href="#" class="nav-logo">PolyAI<span class="nav-logo-dot"></span></a>
+  <ul class="nav-links">
+    <li><a href="#challenge">Hear it</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#compare">vs competitors</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <a href="#pricing" class="nav-cta">Start free trial</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag"><span class="dot"></span>Exclusive OpenTable partner offer</div>
+  <h1>Your phones are ringing.<br><em>Is anyone picking up?</em></h1>
+  <p class="hero-sub">PolyAI answers every call with a voice so natural, your guests won't know the difference — live in 5 minutes, free for 3 months.</p>
+  <div class="hero-actions">
+    <a href="#pricing" class="btn-lime">
+      Start free trial
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2.5 7.5h10M9 4l3.5 3.5L9 11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="#challenge" class="btn-ghost">
+      <svg width="17" height="17" viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="7.5" stroke="currentColor" stroke-width="1.4"/><path d="M6.5 5.5l5 3-5 3V5.5z" fill="currentColor"/></svg>
+      Hear PolyAI — can you tell it's AI?
+    </a>
+  </div>
+  <div class="hero-stats">
+    <div class="hstat"><div class="n">3k<span>+</span></div><div class="l">Restaurants using PolyAI</div></div>
+    <div class="hstat"><div class="n">70<span>%</span></div><div class="l">Avg calls missed on peak nights</div></div>
+    <div class="hstat"><div class="n">$7<span>M</span></div><div class="l">Incremental revenue, one customer</div></div>
+    <div class="hstat"><div class="n">5<span>min</span></div><div class="l">Setup via OpenTable</div></div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<div class="int-bar">
+  <div class="int-bar-label">Works natively with your existing tools</div>
+  <div class="int-logos">
+    <div class="int-pill">OpenTable</div><div class="int-pill">Resy</div><div class="int-pill">SevenRooms</div>
+    <div class="int-pill">Toast</div><div class="int-pill">Square</div><div class="int-pill">Clover</div><div class="int-pill">Tripleseat</div>
+  </div>
+</div>
+
+<!-- ① AUDIO CHALLENGE -->
+<section class="challenge" id="challenge">
+  <div class="centered" style="max-width:600px;margin:0 auto">
+    <div class="sec-tag lime">★ Differentiator #1 — hear the difference</div>
+    <h2 class="sec-h">Can you tell which one is AI?</h2>
+    <p class="sec-p" style="margin:14px auto 0">Two recordings. Same scenario. One is a human host, one is PolyAI. Most people genuinely can't tell.</p>
+  </div>
+  <div class="challenge-cards">
+    <div class="ccard" id="card-a">
+      <div class="ccard-tag">Call recording A</div>
+      <h3>Booking a table for 4</h3>
+      <p>Friday evening, dietary needs, special occasion.</p>
+      <div class="wave"><span class="w1"></span><span class="w2"></span><span class="w3"></span><span class="w4"></span><span class="w5"></span><span class="w6"></span><span class="w7"></span><span class="w8"></span></div>
+      <button class="play-btn" onclick="playCard('a')">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor"><path d="M2 1.5l8 4-8 4V1.5z"/></svg>
+        Play call A
+      </button>
+    </div>
+    <div class="ccard" id="card-b">
+      <div class="ccard-tag">Call recording B</div>
+      <h3>Booking a table for 4</h3>
+      <p>Same scenario. Which sounds more natural?</p>
+      <div class="wave"><span class="w1"></span><span class="w2"></span><span class="w3"></span><span class="w4"></span><span class="w5"></span><span class="w6"></span><span class="w7"></span><span class="w8"></span></div>
+      <button class="play-btn" onclick="playCard('b')">
+        <svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor"><path d="M2 1.5l8 4-8 4V1.5z"/></svg>
+        Play call B
+      </button>
+    </div>
+  </div>
+  <div class="guess-hint" id="guess-hint">Which one is PolyAI?</div>
+  <div class="guess-row">
+    <button class="guess-btn" onclick="guess('a')">Call A is PolyAI</button>
+    <button class="guess-btn" onclick="guess('b')">Call B is PolyAI</button>
+  </div>
+  <div class="challenge-result" id="cresult">
+    <h4 id="rhead"></h4>
+    <p id="rbody"></p>
+    <div class="result-pill" id="rpill"></div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="problem-inner">
+    <div class="centered">
+      <div class="sec-tag">The problem</div>
+      <h2 class="sec-h">Every missed call is a reservation<br>you'll never know you lost.</h2>
+    </div>
+    <div class="pgrid">
+      <div class="pcard"><div class="pcard-icon">📉</div><h3>Missed calls are invisible revenue loss</h3><p>You don't see the calls that went unanswered or the bookings that went elsewhere. The damage is real — it just doesn't show up on any report.</p></div>
+      <div class="pcard"><div class="pcard-icon">🧑‍🍳</div><h3>Your team shouldn't be on the phone</h3><p>Every minute a host spends on the phone is a minute they're not welcoming guests, managing the floor, or delivering the experience you've built.</p></div>
+      <div class="pcard"><div class="pcard-icon">📭</div><h3>Voicemail is a dead end</h3><p>Over 70% of callers who reach voicemail don't call back. They book somewhere that actually picked up.</p></div>
+      <div class="pcard"><div class="pcard-icon">🌙</div><h3>Off-hours bookings go to voicemail</h3><p>Guests don't only call during service. Every after-hours enquiry is a booking lost before your day even starts.</p></div>
+    </div>
+    <div class="pstat">
+      <div class="pstat-num">70%</div>
+      <p>of callers who reach voicemail never call back — they book at the restaurant that answered.<br><br><em>"The first impression starts the moment they pick up the phone."</em> — Lindsey Warman, Fogo de Chão</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="how-inner">
+    <div class="centered">
+      <div class="sec-tag">How it works</div>
+      <h2 class="sec-h">Live in 5 minutes. No IT required.</h2>
+    </div>
+    <div class="how-steps">
+      <div class="hstep"><div class="hstep-n">1</div><h3>Sign into OpenTable</h3><p>Log in to your existing account. One click connects PolyAI — no coding, no training, no IT team.</p><span class="hstep-badge">Under 5 minutes</span></div>
+      <div class="hstep"><div class="hstep-n">2</div><h3>PolyAI learns your restaurant</h3><p>Menu, hours, specials, dietary info, booking policies — absorbed from your OpenTable profile automatically.</p><span class="hstep-badge">Automatic</span></div>
+      <div class="hstep" style="border-right:none"><div class="hstep-n">3</div><h3>Every call answered perfectly</h3><p>Reservations, edits, cancellations, FAQ — all handled 24/7, synced to OpenTable in real time from day one.</p><span class="hstep-badge">Live today</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-inner">
+    <div class="centered">
+      <div class="sec-tag">What PolyAI handles</div>
+      <h2 class="sec-h">Everything your best host does.<br>Around the clock.</h2>
+    </div>
+    <div class="fgrid">
+      <div class="fcard"><span class="fcard-icon">📅</span><h3>Books, edits & cancels reservations</h3><p>Synced to OpenTable in real time. Manages changes and confirmations without involving your team.</p></div>
+      <div class="fcard"><span class="fcard-icon">🎙️</span><h3>Natural, human-sounding voice</h3><p>Trained on real restaurant conversations. Your brand sounds like itself — never robotic, never scripted.</p></div>
+      <div class="fcard"><span class="fcard-icon">🌐</span><h3>Speaks 20+ languages</h3><p>Natural accents and fluent comprehension. Serve every guest in the language they're most comfortable in.</p></div>
+      <div class="fcard" style="border-bottom:none"><span class="fcard-icon">📞</span><h3>Unlimited simultaneous calls</h3><p>No busy signals. No hold music. Every caller gets through instantly — Valentine's Day included.</p></div>
+      <div class="fcard" style="border-bottom:none"><span class="fcard-icon">🍽️</span><h3>Answers menu & FAQ questions</h3><p>Hours, specials, allergens, dietary options — PolyAI knows your restaurant inside out.</p></div>
+      <div class="fcard" style="border-bottom:none;border-right:none"><span class="fcard-icon">🤝</span><h3>Escalates when it matters</h3><p>For anything that genuinely needs a human touch, PolyAI transfers seamlessly with full context handed over.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ② AUDIENCE TABS -->
+<section class="audience">
+  <div class="audience-inner">
+    <div class="sec-tag lime" style="display:block">★ Differentiator #2 — built for every restaurant type</div>
+    <h2 class="sec-h" style="margin-top:4px">One platform. Every restaurant type.</h2>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('ind',this)">Independent</button>
+      <button class="tab" onclick="switchTab('chain',this)">Chains & franchises</button>
+      <button class="tab" onclick="switchTab('ghost',this)">Ghost kitchens ★</button>
+    </div>
+    <div id="tab-ind" class="tcontent active">
+      <div><h3>Stop missing calls. Less than $10/day.</h3><p>Independent restaurants lose the most to missed calls — no staff buffer, no second chance. PolyAI gives you an always-on host without the headcount.</p>
+        <ul class="tlist"><li>Frees your team to focus entirely on in-house guests</li><li>Never loses a booking to voicemail again</li><li>Sets up in 5 minutes — no IT, no training</li><li>3-month free trial, no credit card required</li><li>Pays for itself after 2–3 recovered reservations per month</li></ul>
+      </div>
+      <div class="tbox"><span class="big">$7</span><span style="font-size:22px;font-weight:700;color:var(--lime)">/day</span><div class="desc">Full 24/7 coverage.<br>Less than a staff meal.</div></div>
+    </div>
+    <div id="tab-chain" class="tcontent">
+      <div><h3>One voice. Every location. Total control.</h3><p>Deploy consistent, brand-compliant AI across every location simultaneously, with centralised dashboards showing performance estate-wide.</p>
+        <ul class="tlist"><li>Roll out across 50 locations in under a week</li><li>Centralised analytics — per-location and roll-up views</li><li>Brand-compliant responses and tone across all sites</li><li>Custom AI persona trained to your brand standards</li><li>Multi-location enterprise pricing available</li></ul>
+      </div>
+      <div class="tbox"><span class="big">$7M</span><div class="desc">Incremental revenue added for Fogo de Chão across their estate.</div></div>
+    </div>
+    <div id="tab-ghost" class="tcontent">
+      <div><div class="ghost-only">★ Only PolyAI does this</div><h3>10 virtual brands. One phone line.</h3><p>Ghost kitchens have unique needs — multiple menus, high volume, no physical host. PolyAI is the only restaurant voice AI built for this segment.</p>
+        <ul class="tlist"><li>Handles multiple virtual brand menus on a single line</li><li>Routes callers to the right brand automatically</li><li>Injects orders directly into your kitchen POS</li><li>No front-of-house staff needed — ever</li><li>Scales instantly at peak ordering hours</li></ul>
+      </div>
+      <div class="tbox"><span class="big" style="font-size:28px;line-height:1.3">No competitor<br>does this</span><div class="desc">Slang, Loman, Hostie, and Sadie all ignore ghost kitchens. PolyAI leads.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ③ REVENUE CALCULATOR -->
+<section class="roi" id="roi">
+  <div class="roi-inner" style="max-width:960px">
+    <div class="centered">
+      <div class="sec-tag lime">★ Differentiator #3 — revenue calculator</div>
+      <h2 class="sec-h">See exactly what PolyAI is worth to your restaurant.</h2>
+      <p class="sec-p" style="margin:14px auto 0">Adjust the sliders to match your restaurant. We'll show you the full revenue picture — what you're losing today and what you gain with PolyAI.</p>
+    </div>
+
+    <div class="roi-card" style="margin-top:40px">
+
+      <!-- INPUTS -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:32px">
+
+        <div>
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:20px">Your restaurant</div>
+          <div style="display:flex;flex-direction:column;gap:22px">
+
+            <div class="roi-field">
+              <label>Inbound calls per day</label>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                <span class="val" id="v-calls">40</span>
+                <span style="font-size:11px;color:var(--text-muted)">5 — 200</span>
+              </div>
+              <input type="range" min="5" max="200" value="40" id="r-calls" oninput="calc()">
+            </div>
+
+            <div class="roi-field">
+              <label>Average booking value</label>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                <span class="val" id="v-ticket">$85</span>
+                <span style="font-size:11px;color:var(--text-muted)">$20 — $300</span>
+              </div>
+              <input type="range" min="20" max="300" value="85" id="r-ticket" oninput="calc()">
+            </div>
+
+            <div class="roi-field">
+              <label>Calls that result in a booking</label>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                <span class="val" id="v-conv">55%</span>
+                <span style="font-size:11px;color:var(--text-muted)">10% — 90%</span>
+              </div>
+              <input type="range" min="10" max="90" value="55" id="r-conv" oninput="calc()">
+            </div>
+
+            <div class="roi-field">
+              <label>Calls missed or going to voicemail</label>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                <span class="val" id="v-miss">35%</span>
+                <span style="font-size:11px;color:var(--text-muted)">10% — 80%</span>
+              </div>
+              <input type="range" min="10" max="80" value="35" id="r-miss" oninput="calc()">
+            </div>
+
+            <div class="roi-field">
+              <label>Callers who don't leave voicemail or call back</label>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                <span class="val" id="v-abandon">70%</span>
+                <span style="font-size:11px;color:var(--text-muted)">40% — 90%</span>
+              </div>
+              <input type="range" min="40" max="90" value="70" id="r-abandon" oninput="calc()">
+            </div>
+
+          </div>
+        </div>
+
+        <!-- RESULTS PANEL -->
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:8px">Your revenue picture</div>
+
+          <!-- Lost revenue -->
+          <div style="background:var(--bg-4);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);margin-bottom:6px">Revenue lost to missed calls today</div>
+            <div id="r-lost" style="font-size:38px;font-weight:700;letter-spacing:-1.5px;color:#c97a5a">$4,284</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">per month · <span id="r-lost-yr" style="color:var(--text-secondary)">$51,408/yr</span></div>
+          </div>
+
+          <!-- Recovered -->
+          <div style="background:var(--lime-soft);border:1px solid var(--lime-border);border-radius:var(--radius);padding:20px">
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--lime-dark);margin-bottom:6px">Revenue recovered with PolyAI</div>
+            <div id="r-rec" style="font-size:38px;font-weight:700;letter-spacing:-1.5px;color:var(--lime)">$3,427</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">per month · <span id="r-rec-yr" style="color:var(--text-secondary)">$41,126/yr</span></div>
+          </div>
+
+          <!-- Net after PolyAI cost -->
+          <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);margin-bottom:6px">Net gain after PolyAI cost ($299/mo)</div>
+            <div id="r-net" style="font-size:38px;font-weight:700;letter-spacing:-1.5px;color:var(--text-primary)">$3,128</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:4px">per month · <span id="r-net-yr" style="color:var(--text-secondary)">$37,526/yr</span></div>
+          </div>
+
+          <!-- ROI multiple -->
+          <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+            <div>
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);margin-bottom:4px">Return on investment</div>
+              <div style="font-size:13px;color:var(--text-secondary)">Revenue recovered ÷ PolyAI cost</div>
+            </div>
+            <div id="r-roi" style="font-size:32px;font-weight:700;color:var(--lime);letter-spacing:-1px;flex-shrink:0">11.5×</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- WATERFALL BAR CHART -->
+      <div style="border-top:1px solid var(--border);padding-top:28px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:20px">Monthly revenue breakdown</div>
+        <div id="chart-wrap" style="display:flex;flex-direction:column;gap:10px"></div>
+        <div style="margin-top:20px;padding:16px 20px;background:var(--bg-4);border-radius:var(--radius-sm);font-size:13px;color:var(--text-secondary);line-height:1.6">
+          <strong style="color:var(--text-primary)">How we calculate this:</strong> We take your daily call volume × 30 days × your missed call % to get monthly missed calls. We then multiply by your abandonment rate (callers who don't rebook), your booking conversion rate, and your average booking value to arrive at true lost revenue. PolyAI recovers ~80% of those calls.
+        </div>
+      </div>
+
+      <div style="margin-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div style="font-size:13px;color:var(--text-secondary)">Based on <strong style="color:var(--text-primary)">3 months free</strong> — you keep 100% of recovered revenue before paying a penny.</div>
+        <a href="#pricing" class="btn-lime" style="font-size:14px;padding:12px 24px">Start free trial →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="testimonials-inner">
+    <div class="centered">
+      <div class="sec-tag">What operators say</div>
+      <h2 class="sec-h">Restaurants that answered every call.</h2>
+    </div>
+    <div class="tgrid">
+      <div class="tcard hero-card"><div class="tcard-metric">$7M incremental revenue</div><blockquote>"PolyAI is on track to add just over $7M in incremental revenue to our business."</blockquote><div class="tcard-author"><div class="tcard-av">MB</div><div><div class="tcard-name">Michael Breed</div><div class="tcard-role">CMO, Fogo de Chão</div></div></div></div>
+      <div class="tcard"><div class="tcard-metric">100+ locations live</div><blockquote>"Locations can go live with a branded, pre-trained voice agent extremely quickly — less time on technology, more time delivering the perfect night out."</blockquote><div class="tcard-author"><div class="tcard-av">RB</div><div><div class="tcard-name">Randy Barnett</div><div class="tcard-role">CTO, Melting Pot</div></div></div></div>
+      <div class="tcard"><div class="tcard-metric">76% call-to-cover rate</div><blockquote>"The first impression starts the moment they pick up the phone. When a call goes unanswered, you're not getting any of that hospitality."</blockquote><div class="tcard-author"><div class="tcard-av">LW</div><div><div class="tcard-name">Lindsey Warman</div><div class="tcard-role">Marketing Director, Fogo de Chão</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ④ COMPARE TABLE -->
+<section class="compare" id="compare">
+  <div class="compare-inner">
+    <div class="centered">
+      <div class="sec-tag lime">★ Differentiator #4 — how we compare</div>
+      <h2 class="sec-h">PolyAI vs the competition.</h2>
+      <p class="sec-p" style="margin:14px auto 0">A transparent look at every major AI restaurant phone assistant on the market.</p>
+    </div>
+    <div class="ctbl">
+      <table>
+        <thead>
+          <tr><th style="text-align:left">Feature</th><th class="poly-h">PolyAI</th><th>Slang AI</th><th>Loman AI</th><th>Hostie AI</th><th>Sadie AI</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Voice quality</td><td class="poly-h"><span class="yes">★ Best-in-class</span></td><td><span class="partial">Good</span></td><td><span class="partial">Good</span></td><td><span class="partial">Good</span></td><td><span class="partial">Basic</span></td></tr>
+          <tr><td>Free trial</td><td class="poly-h"><span class="yes">✓ 3 months</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="partial">Limited</span></td><td><span class="partial">30 days</span></td></tr>
+          <tr><td>Setup time</td><td class="poly-h"><span class="yes">5 minutes</span></td><td><span class="partial">30 min</span></td><td><span class="partial">~1 hr</span></td><td><span class="partial">~1 hr</span></td><td><span class="partial">~1 hr</span></td></tr>
+          <tr><td>OpenTable native</td><td class="poly-h"><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="no">✗</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+          <tr><td>Takes food orders</td><td class="poly-h"><span class="yes">✓</span></td><td><span class="no">✗</span></td><td><span class="yes">✓</span></td><td><span class="no">✗</span></td><td><span class="yes">✓</span></td></tr>
+          <tr><td>Processes payments</td><td class="poly-h"><span class="yes">✓</span></td><td><span class="no">✗</span></td><td><span class="yes">✓</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>Languages</td><td class="poly-h"><span class="yes">20+</span></td><td><span class="partial">2</span></td><td><span class="partial">Several</span></td><td><span class="yes">20</span></td><td><span class="yes">47+</span></td></tr>
+          <tr><td>Ghost kitchen support</td><td class="poly-h"><span class="yes">✓ Only us</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>Multi-location dashboard</td><td class="poly-h"><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="partial">Basic</span></td><td><span class="partial">Basic</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>ROI calculator</td><td class="poly-h"><span class="yes">✓</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>Setup fee</td><td class="poly-h"><span class="yes">$0</span></td><td><span class="partial">Varies</span></td><td><span class="no">$149</span></td><td><span class="yes">$0</span></td><td><span class="yes">$0</span></td></tr>
+          <tr><td>Starting price/mo</td><td class="poly-h"><span class="yes">$299 (partner)</span></td><td><span style="color:#c97a5a">$399</span></td><td><span class="partial">$199</span></td><td><span class="partial">$199</span></td><td><span class="partial">$99</span></td></tr>
+          <tr><td>Rate lock guarantee</td><td class="poly-h"><span class="yes">✓ For life</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td><td><span class="no">✗</span></td></tr>
+          <tr><td>Audio demo on homepage</td><td class="poly-h"><span class="yes">✓</span></td><td><span class="no">✗</span></td><td><span class="partial">Call only</span></td><td><span class="partial">Call only</span></td><td><span class="partial">Call only</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ctbl-note">Competitor data from public websites, March 2026. Subject to change.</p>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="pricing-inner">
+    <div class="sec-tag lime" style="display:block">Pricing</div>
+    <h2 class="sec-h" style="margin-top:4px">Three months free. Locked in for life.</h2>
+    <p class="sec-p" style="margin:14px auto 32px">Limited offer for OpenTable partners. Start before May 11.</p>
+    <div class="offer-pill">⏰ Offer closes May 11 · Partner rate locked for life of contract</div>
+    <div class="pgrid">
+      <div class="pcard-w">
+        <h3>Starter</h3>
+        <div class="price">$149<span>/mo</span></div>
+        <div class="was">Standard $199/mo</div>
+        <ul class="pcard-feats"><li>24/7 call answering</li><li>FAQ & hours handling</li><li>OpenTable sync</li><li>20+ languages</li><li>Analytics dashboard</li></ul>
+        <a href="#" class="pcard-btn">Start free trial</a>
+      </div>
+      <div class="pcard-w pop">
+        <div class="pcard-badge">Most popular · OpenTable partner offer</div>
+        <h3>Pro</h3>
+        <div class="price">$299<span>/mo</span></div>
+        <div class="was">Standard $399/mo — save $1,200/yr</div>
+        <ul class="pcard-feats"><li>Everything in Starter</li><li>Reservation taking, editing & cancellation</li><li>Full menu & dietary Q&A</li><li>Smart escalation to staff</li><li>Rate locked for life of contract</li><li>3 months completely free to start</li></ul>
+        <a href="#" class="pcard-btn">Start free trial</a>
+      </div>
+      <div class="pcard-w">
+        <h3>Enterprise</h3>
+        <div class="price" style="font-size:28px;letter-spacing:-1px">Custom</div>
+        <div class="was">Multi-location pricing</div>
+        <ul class="pcard-feats"><li>Everything in Pro</li><li>Centralised multi-location dashboard</li><li>Custom branded AI persona</li><li>POS order injection</li><li>Ghost kitchen multi-brand support</li><li>Dedicated success manager</li></ul>
+        <a href="#" class="pcard-btn">Talk to sales</a>
+      </div>
+    </div>
+    <div class="ptable" style="margin-top:36px;text-align:left">
+      <table>
+        <thead><tr><th style="width:40%">What you get</th><th>Standard pricing</th><th>Your OpenTable offer</th></tr></thead>
+        <tbody>
+          <tr><td>Setup fee</td><td>Varies</td><td><span class="chk">✓</span> $0</td></tr>
+          <tr><td>First 3 months</td><td>$1,197</td><td><span class="chk">✓</span> FREE — $0</td></tr>
+          <tr><td>Monthly rate (post-trial)</td><td>$399/mo</td><td><span class="chk">✓</span> $299/mo</td></tr>
+          <tr><td>Credit card to start</td><td>Required</td><td><span class="chk">✓</span> Not required</td></tr>
+          <tr><td>Rate lock guarantee</td><td><span class="crx">✗</span></td><td><span class="chk">✓</span> Locked for life</td></tr>
+          <tr><td>Year one total cost</td><td style="color:var(--text-muted)">$4,700</td><td style="color:var(--lime);font-size:15px;font-weight:700">$2,691</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="faq-inner">
+    <div class="centered">
+      <div class="sec-tag">Questions answered</div>
+      <h2 class="sec-h">Everything you need to know.</h2>
+    </div>
+    <div style="margin-top:48px">
+      <div class="fitem open"><button class="fq" onclick="tFaq(this)">Is there a catch to the free trial?<span class="fchev">+</span></button><div class="fa">No catch. You don't need a credit card to start. If after 3 months PolyAI hasn't proven its value, cancel and pay nothing. We're confident enough to earn your business before asking for it.</div></div>
+      <div class="fitem"><button class="fq" onclick="tFaq(this)">How long does setup actually take?<span class="fchev">+</span></button><div class="fa">Five minutes. We connect directly to your existing OpenTable account. No IT support, no training, no coding. If you can log into OpenTable, you can set up PolyAI.</div></div>
+      <div class="fitem"><button class="fq" onclick="tFaq(this)">Will it sound robotic to my guests?<span class="fchev">+</span></button><div class="fa">Try the audio challenge above. In surveys, guests consistently cannot identify they're speaking with AI. The voice is natural and trained on real restaurant conversations — your brand sounds like itself, never like a call centre.</div></div>
+      <div class="fitem"><button class="fq" onclick="tFaq(this)">Why is there an annual contract after the trial?<span class="fchev">+</span></button><div class="fa">The annual commitment is what lets us offer $299 instead of $399/month — that's $1,200 back every year. You get three full months to decide with zero risk, and your rate is locked even if our prices increase.</div></div>
+      <div class="fitem"><button class="fq" onclick="tFaq(this)">Can PolyAI handle special requests?<span class="fchev">+</span></button><div class="fa">Yes. Dietary requirements, seating preferences, large party enquiries, menu questions, hours — and it escalates to a human when something genuinely needs personal attention.</div></div>
+      <div class="fitem"><button class="fq" onclick="tFaq(this)">Do you support ghost kitchens and virtual brands?<span class="fchev">+</span></button><div class="fa">Yes — and we're the only voice AI platform in the market that does. PolyAI handles multiple virtual brand menus on a single phone line, routes callers to the right brand automatically, and injects orders into your kitchen POS. No front-of-house staff required.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="fcta">
+  <div class="deadline">⏰ OpenTable partner offer closes May 11</div>
+  <h2>Stop leaving revenue<br>on the table.</h2>
+  <p>Three months free. Live in 5 minutes. No credit card required.</p>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px;position:relative">
+    <a href="#pricing" class="btn-lime" style="font-size:17px;padding:16px 36px">Start your free trial</a>
+    <div class="micro">Cancel before your trial ends — pay absolutely nothing</div>
+  </div>
+</section>
+
+<footer>
+  <div class="ftop">
+    <div class="fbrand">
+      <a href="#" class="fbrand-logo">PolyAI<span class="ldot" style="width:7px;height:7px;background:var(--lime);border-radius:50%;display:inline-block;margin-left:3px;vertical-align:middle"></span></a>
+      <p>The voice AI platform for restaurants — every call answered, every shift, in every language.</p>
+    </div>
+    <div class="fcol"><h4>Product</h4><ul><li><a href="#">Agent Studio</a></li><li><a href="#">Technology</a></li><li><a href="#">Integrations</a></li><li><a href="#">Pricing</a></li><li><a href="#">Security</a></li></ul></div>
+    <div class="fcol"><h4>Industries</h4><ul><li><a href="#">Restaurants</a></li><li><a href="#">Hotels</a></li><li><a href="#">Healthcare</a></li><li><a href="#">Retail</a></li></ul></div>
+    <div class="fcol"><h4>Company</h4><ul><li><a href="#">About</a></li><li><a href="#">Customers</a></li><li><a href="#">Pressroom</a></li><li><a href="#">Careers</a></li><li><a href="#">Contact</a></li></ul></div>
+  </div>
+  <div class="fbot"><div>© 2026 PolyAI Ltd.</div><div style="display:flex;gap:20px"><a href="#">Privacy Policy</a><a href="#">Terms of use</a></div></div>
+</footer>
+
+<script>
+const POLY='b';
+let guessed=false;
+
+function playCard(id){
+  const c=document.getElementById('card-'+id);
+  const was=c.classList.contains('playing');
+  document.querySelectorAll('.ccard').forEach(x=>x.classList.remove('playing'));
+  document.querySelectorAll('.play-btn').forEach(b=>{
+    const i=b.closest('.ccard').id==='card-a'?'a':'b';
+    b.innerHTML='<svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor"><path d="M2 1.5l8 4-8 4V1.5z"/></svg> Play call '+i.toUpperCase();
+  });
+  if(!was){
+    c.classList.add('playing');
+    const btn=c.querySelector('.play-btn');
+    btn.innerHTML='<svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><rect x="1" y="1" width="3" height="8" rx="1"/><rect x="6" y="1" width="3" height="8" rx="1"/></svg> Playing…';
+    setTimeout(()=>{
+      c.classList.remove('playing');
+      btn.innerHTML='<svg width="11" height="11" viewBox="0 0 11 11" fill="currentColor"><path d="M2 1.5l8 4-8 4V1.5z"/></svg> Play call '+(id==='a'?'A':'B');
+    },4200);
+  }
+}
+
+function guess(picked){
+  if(guessed)return;
+  guessed=true;
+  const ok=picked===POLY;
+  const r=document.getElementById('cresult');
+  r.className='challenge-result show '+(ok?'correct':'wrong');
+  document.getElementById('card-'+POLY).classList.add('revealed-poly');
+  document.getElementById('card-'+(POLY==='a'?'b':'a')).classList.remove('playing');
+  document.getElementById('rhead').textContent=ok?'You got it — but most guests don\'t.':'Actually, Call B is PolyAI.';
+  document.getElementById('rbody').textContent=ok
+    ?'Call B is PolyAI. You picked it — but in blind tests with real diners, the majority can\'t identify the AI. That\'s the point.'
+    :'Call B is PolyAI. In blind tests with real restaurant guests, most people cannot tell which voice is AI. That\'s precisely what makes PolyAI different.';
+  document.getElementById('rpill').textContent='Guests consistently can\'t identify PolyAI in blind tests';
+  document.getElementById('guess-hint').style.display='none';
+}
+
+function switchTab(id,btn){
+  document.querySelectorAll('.tcontent').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function fmt(n){return'
+
+function tFaq(btn){btn.closest('.fitem').classList.toggle('open')}
+
+calc();
+</script>
+</body>
+</html>
++Math.round(n).toLocaleString()}
+function calc(){
+  const calls   = +document.getElementById('r-calls').value;
+  const ticket  = +document.getElementById('r-ticket').value;
+  const conv    = +document.getElementById('r-conv').value / 100;
+  const miss    = +document.getElementById('r-miss').value / 100;
+  const abandon = +document.getElementById('r-abandon').value / 100;
+
+  document.getElementById('v-calls').textContent   = calls;
+  document.getElementById('v-ticket').textContent  = '
+
+function tFaq(btn){btn.closest('.fitem').classList.toggle('open')}
+
+calcRoi();
+</script>
+</body>
+</html>
++ticket;
+  document.getElementById('v-conv').textContent    = Math.round(conv*100)+'%';
+  document.getElementById('v-miss').textContent    = Math.round(miss*100)+'%';
+  document.getElementById('v-abandon').textContent = Math.round(abandon*100)+'%';
+
+  const totalCalls   = calls * 30;
+  const missedCalls  = totalCalls * miss;
+  const lostBookings = missedCalls * abandon * conv;
+  const lostRev      = lostBookings * ticket;
+  const recRev       = lostRev * 0.80;          // PolyAI recovers ~80%
+  const polyCost     = 299;
+  const netRev       = recRev - polyCost;
+  const roi          = recRev / polyCost;
+
+  document.getElementById('r-lost').textContent    = fmt(lostRev);
+  document.getElementById('r-lost-yr').textContent = fmt(lostRev*12)+'/yr';
+  document.getElementById('r-rec').textContent     = fmt(recRev);
+  document.getElementById('r-rec-yr').textContent  = fmt(recRev*12)+'/yr';
+  document.getElementById('r-net').textContent     = fmt(Math.max(0,netRev));
+  document.getElementById('r-net-yr').textContent  = fmt(Math.max(0,netRev)*12)+'/yr';
+  document.getElementById('r-roi').textContent     = roi.toFixed(1)+'×';
+
+  // Waterfall bar chart
+  const items = [
+    {label:'Total monthly call revenue potential', val:totalCalls*conv*ticket, color:'var(--border-2)', text:'var(--text-secondary)'},
+    {label:'Revenue from answered calls', val:(totalCalls-missedCalls)*conv*ticket, color:'var(--bg-4)', text:'var(--text-secondary)'},
+    {label:'Currently lost to missed calls', val:-lostRev, color:'rgba(201,122,90,0.25)', text:'#c97a5a', border:'rgba(201,122,90,0.4)'},
+    {label:'Recovered by PolyAI (+80%)', val:recRev, color:'var(--lime-soft)', text:'var(--lime)', border:'var(--lime-border)'},
+    {label:'PolyAI monthly cost', val:-polyCost, color:'rgba(80,80,60,0.3)', text:'var(--text-muted)', border:'var(--border-2)'},
+    {label:'Net monthly gain', val:Math.max(0,netRev), color:'rgba(200,240,77,0.18)', text:'var(--lime)', border:'var(--lime-border)'},
+  ];
+  const maxVal = Math.max(...items.map(i=>Math.abs(i.val)));
+  const wrap = document.getElementById('chart-wrap');
+  wrap.innerHTML = items.map(item=>{
+    const w = Math.max(2, Math.round(Math.abs(item.val)/maxVal*100));
+    const isNeg = item.val < 0;
+    return `<div style="display:flex;align-items:center;gap:12px">
+      <div style="width:220px;font-size:12px;color:${item.text};text-align:right;flex-shrink:0;line-height:1.3">${item.label}</div>
+      <div style="flex:1;display:flex;align-items:center;gap:8px">
+        <div style="width:${w}%;background:${item.color};border:1px solid ${item.border||'var(--border)'};border-radius:4px;height:28px;min-width:4px;transition:width .4s ease"></div>
+        <span style="font-size:13px;font-weight:700;color:${item.text};white-space:nowrap">${isNeg?'-':''}${fmt(Math.abs(item.val))}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function tFaq(btn){btn.closest('.fitem').classList.toggle('open')}
+
+calcRoi();
+</script>
+</body>
+</html>
